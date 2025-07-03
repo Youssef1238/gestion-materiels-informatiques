@@ -1,0 +1,93 @@
+
+require('../config/DBconnect')
+const ArticleMarche = require('../models/articleMarcheSchema')
+const ArticleLivre = require('../models/articleLivreSchema')
+
+const getArticleMarches = async (req,res)=>{
+    try{
+        const articleMarches = await ArticleMarche.find()
+        res.json(articleMarches)
+    }catch(err){
+        res.status(500).json({title : "Server error",message : err.message})
+    }
+    
+}
+
+const addArticleMarche = async (req,res)=>{
+    if(!req.body.marche_id || !req.body.Numero || !req.body.type_id || !req.body.marque
+        || !req.body.description || !req.body.quantite || !req.body.prix_estimatif || !req.body.prix_unitaire
+        || !req.body.prix_totale
+    ){
+        return res.status(400).send("all fields are required ")
+    }
+    try{
+        const articleMarche = new ArticleMarche({
+            marche_id : req.body.marche_id,
+            Numero : req.body.Numero,
+            type_id : req.body.type_id,
+            marque : req.body.marque,
+            description : req.body.description,
+            quantite : req.body.quantite,
+            prix_estimatif : req.body.prix_estimatif,
+            prix_unitaire : req.body.prix_unitaire,
+            prix_totale : req.body.prix_totale
+        })
+        articleMarche.save()
+        res.json(articleMarche)
+    }catch(err){
+        res.status(500).json({title : "Server error",message : err.message})
+    }
+    
+}
+
+const UpdateArticleMarche = async (req,res)=>{
+    if(!req.body.id) res.status(400).send("id is required")
+        try{
+
+            const item = await ArticleMarche.findOne({_id : req.body.id})
+            if(!item) return res.sendStatus(404)
+
+            req.body.marche_id && await ArticleMarche.updateOne({_id : req.body.id},{$set : {marche_id : req.body.marche_id}});
+            req.body.Numero && await ArticleMarche.updateOne({_id : req.body.id},{$set : {Numero : req.body.Numero}});
+            req.body.type_id && await ArticleMarche.updateOne({_id : req.body.id},{$set : {type_id : req.body.type_id}});
+            req.body.marque && await ArticleMarche.updateOne({_id : req.body.id},{$set : {marque : req.body.marque}});
+            req.body.description && await ArticleMarche.updateOne({_id : req.body.id},{$set : {description : req.body.description}});
+            req.body.quantite && await ArticleMarche.updateOne({_id : req.body.id},{$set : {quantite : req.body.quantite}});
+            req.body.prix_estimatif && await ArticleMarche.updateOne({_id : req.body.id},{$set : {prix_estimatif : req.body.prix_estimatif}});
+            req.body.prix_unitaire && await ArticleMarche.updateOne({_id : req.body.id},{$set : {prix_unitaire : req.body.prix_unitaire}});
+            req.body.prix_totale && await ArticleMarche.updateOne({_id : req.body.id},{$set : {prix_totale : req.body.prix_totale}});
+            res.send("Updated")
+        }catch(err){
+            res.status(500).json({title : "Server error",message : err.message})
+        }
+    
+}
+
+const deleteArticleMarche = async(req,res)=>{
+    if(!req.body.id) res.status(400).send("id is required")
+        try{
+            const item = await ArticleMarche.findOne({_id : req.body.id})
+            if(!item) return res.sendStatus(404)
+            await ArticleLivre.deleteMany({article_marche_id : req.body.id})
+            await ArticleMarche.deleteOne({_id : req.body.id})
+            res.send("Deleted")
+        }catch(err){
+            res.status(500).json({title : "Server error",message : err.message})
+        }
+    
+}
+
+const getArticleByMarche = async (req,res)=>{
+    if(!req.params.id) return res.status(400).send("id needed")
+    try{
+        const articleMarche = await ArticleMarche.find({marche_id : req.params.id})
+        res.json(articleMarche)
+    }catch(err){
+        res.status(500).json({title : "Server error",message : err.message})
+    }
+    
+}
+
+
+
+module.exports = {getArticleMarches, addArticleMarche,UpdateArticleMarche,deleteArticleMarche,getArticleByMarche}

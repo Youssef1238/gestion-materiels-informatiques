@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    button {
+      @apply  rounded-md text-[1rem] bg-white border p-[10px] cursor-pointer hover:bg-gray-700 hover:text-white font-Roboto;
+    }
+    .input-base{
+        @apply rounded-sm border border-gray-300 bg-white text-gray-700 placeholder-gray-400 focus:ring focus:ring-[#60A5FA] focus:ring-opacity-50 focus:border-[#60A5FA] shadow-sm transition; 
+    }
+    input[type = "file"]{
+        @apply ml-2; 
+    }
+    select{
+        @apply w-fit rounded-sm py-1 px-2 border border-gray-300 bg-white text-gray-700 hover:bg-[#EAF4FF] focus:ring focus:ring-[#60A5FA] focus:ring-opacity-50 focus:border-[#60A5FA] shadow-sm transition; 
+    }
+    h1{
+        @apply text-4xl font-bold text-gray-800 font-poppins;
+    }
+    h2{
+        @apply text-3xl font-semibold text-gray-700 font-poppins;
+    }
+    td{
+        @apply border border-black p-1;
+    }
+    label{
+        @apply text-lg font-medium text-gray-700;
+    }
+    textarea{
+        @apply border border-gray-400 resize-none focus:outline-none rounded-sm;
+    }
+    thead{
+        @apply font-semibold;
+    }
+    hr{
+        @apply w-full border-black my-4 ;
+    }
+}
