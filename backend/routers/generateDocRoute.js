@@ -1,10 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const stats = require('../controllers/Manage_stats')
+const generate = require('../utils/generateDoc')
 
-router.get('/',stats)
-
-
+router.route('/')
+.post(generate)
 
 
 module.exports = router

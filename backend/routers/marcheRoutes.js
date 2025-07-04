@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getMarches , addMarche ,UpdateMarche, deleteMarche,getMarche,getMarchesByFournisseur} = require('../controllers/Manage_marche')
+const {getMarches , addMarche ,UpdateMarche, deleteMarche,getMarche,getMarchesByFournisseur} = require('../controllers/marcheController')
 
 router.route('/')
 .get(getMarches)

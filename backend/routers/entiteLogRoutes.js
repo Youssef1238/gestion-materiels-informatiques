@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getEntiteLogs , addEntiteLog ,UpdateEntiteLog, deleteEntiteLog} = require('../controllers/Manage_entiteLog')
+const {getEntiteLogs , addEntiteLog ,UpdateEntiteLog, deleteEntiteLog} = require('../controllers/entiteLogController')
 
 router.route('/')
 .post(addEntiteLog)

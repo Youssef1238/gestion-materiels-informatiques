@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getAffectations , addAffectation ,UpdateAffectation, deleteAffectation,getAffectationByArticle,handelRecuperation} = require('../controllers/Manage_affectation')
+const {getAffectations , addAffectation ,UpdateAffectation, deleteAffectation,getAffectationByArticle,handelRecuperation} = require('../controllers/affectationController')
 
 router.route('/')
 .get(getAffectations)

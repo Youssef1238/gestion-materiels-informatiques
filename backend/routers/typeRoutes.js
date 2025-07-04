@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getTypes , addType ,UpdateType, deleteType,getType} = require('../controllers/Manage_type')
+const {getTypes , addType ,UpdateType, deleteType,getType} = require('../controllers/typeController')
 
 router.route('/')
 .get(getTypes)

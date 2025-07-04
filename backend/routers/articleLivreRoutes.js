@@ -3,7 +3,7 @@ const router = express.Router()
 const {getArticleLivres , addArticleLivre ,UpdateArticleLivre, 
     deleteArticleLivre,getArticleByArticleMarche,getArticleLivre,
     getArticleByEntite,getArticlebyMarche,getArticleBySerie,
-    deleteByArticleMarche,getItems} = require('../controllers/Manage_articleLivre')
+    deleteByArticleMarche,getItems} = require('../controllers/articleLivreController')
 
 router.route('/')
 .get(getArticleLivres)
