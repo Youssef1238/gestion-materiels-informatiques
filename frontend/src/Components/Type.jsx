@@ -1,11 +1,10 @@
-import axios from "axios"
+import api from '../utils/Api';
 import * as XLSX from'xlsx'
 import { useEffect, useRef, useState } from "react"
 import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon} from '../assets/Icons';
 import { WarningModal } from "./WarningModal";
 import { useNavigate } from "react-router-dom";
 import NotificationExcelPanel from "./NotificationExcelPanel";
-import Cookies from "js-cookie"
 
 export default function Type() {
     
@@ -26,16 +25,11 @@ export default function Type() {
     const [Ajout,setAjout] = useState(false);
     const [data,setData] = useState([])
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
 
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const res = await axios.get(`http://localhost:5500/type`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/type`)
                 
                 setData(res.data)
             }catch(err){
@@ -57,15 +51,11 @@ export default function Type() {
         const error = ValidateInput(id)
         if(error == ""){
             try{
-                const res = await axios.put('http://localhost:5500/type',{
+                await api.put('http://localhost:5500/type',{
                     id : id,
                     libelle : libelleInput.current.value.trim(),
                     order : orderInput.current.value.trim()
                     
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setEditMode(null)
@@ -88,13 +78,9 @@ export default function Type() {
 
         if(error == ""){
             try {
-                const res = await axios.post('http://localhost:5500/type',{
+                await api.post('http://localhost:5500/type',{
                     libelle : newLibelleInput.current.value.trim(),
                     order : newOrderInput.current.value.trim()
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setAjout(false)
@@ -115,13 +101,8 @@ export default function Type() {
         const userConfirmed = await showModal();
         if(userConfirmed){
             try {
-                const res = await axios.delete('http://localhost:5500/type',{
-                    data : {id : id},
-                    
-                        headers : {
-                            'authorization' : auth
-                        }
-                    
+                await api.delete('http://localhost:5500/type',{
+                    data : {id : id}   
                 })
                 
                 setChanged(c=>!c)
@@ -151,13 +132,9 @@ export default function Type() {
                 if(error == ""){
                     
                     try {
-                        const res = await axios.post('http://localhost:5500/type',{
+                        await api.post('http://localhost:5500/type',{
                             libelle : e["Libelle"].trim(),
                             order : e["Order"]
-                        },{
-                            headers : {
-                                'authorization' : auth
-                            }
                         })
                         
                         setExcelResult(prv=>[prv[0] + 1 , prv[1]])

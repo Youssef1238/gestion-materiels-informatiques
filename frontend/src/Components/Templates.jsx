@@ -1,4 +1,3 @@
-import React from "react";
 
 const templates = [
   { name: "Template de Marche", downloadLink: "../../public/templates/ArticleLivreTemplate.xlsx" },

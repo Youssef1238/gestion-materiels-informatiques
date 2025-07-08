@@ -1,3 +1,4 @@
+const express = require('express')
 const router = express.Router()
 const {getFournisseurs , addFournisseur ,UpdateFournisseur, deleteFournisseur,getFournisseur} = require('../controllers/fournisseurController')
 

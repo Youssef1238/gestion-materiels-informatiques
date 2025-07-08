@@ -1,11 +1,10 @@
-import axios from "axios"
+import api from '../utils/Api';
 import * as XLSX from'xlsx'
 import { useEffect, useRef, useState } from "react"
 import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon} from '../assets/Icons';
 import { WarningModal } from "./WarningModal";
 import { useNavigate } from "react-router-dom";
 import NotificationExcelPanel from "./NotificationExcelPanel";
-import Cookies from "js-cookie"
 
 export default function EntiteAdmin() {
 
@@ -26,16 +25,11 @@ export default function EntiteAdmin() {
     const [NlibelleFRError,setNlibelleFRError] = useState("")
     const [isPanelVisible, setIsPanelVisible] = useState(false);
     const [ExcelResult, setExcelResult] = useState([0,0]);
-    const auth = Cookies.get('id')
 
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const res = await axios.get(`http://localhost:5500/entiteAdmin`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/entiteAdmin`)
                 
                 setData(res.data)
             }catch(err){
@@ -56,14 +50,10 @@ export default function EntiteAdmin() {
         const error = ValidateInput(libelleArInput.current.value,libelleFrInput.current.value,1)
         if(error == ""){
             try{
-                const res = await axios.put('http://localhost:5500/entiteAdmin',{
+                await api.put('http://localhost:5500/entiteAdmin',{
                     id : id,
                     libelle_ar : libelleArInput.current.value.trim(),
                     libelle_fr : libelleFrInput.current.value.trim()
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 
@@ -88,13 +78,9 @@ export default function EntiteAdmin() {
         const error = ValidateInput(newLibelleArInput.current.value,newLibelleFrInput.current.value,0)
         if(error == ""){
             try {
-                const res = await axios.post('http://localhost:5500/entiteAdmin',{
+                await api.post('http://localhost:5500/entiteAdmin',{
                     libelle_ar : newLibelleArInput.current.value.trim(),
                     libelle_fr : newLibelleFrInput.current.value.trim(),
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setAjout(false)
@@ -115,13 +101,8 @@ export default function EntiteAdmin() {
         const userConfirmed = await showModal();
         if(userConfirmed){
             try {
-                const res = await axios.delete('http://localhost:5500/entiteAdmin',{
-                    data : {id : id},
-
-                    headers : {
-                            'authorization' : auth
-                        }
-                    
+                await api.delete('http://localhost:5500/entiteAdmin',{
+                    data : {id : id}
                 })
                 
                 setChanged(c=>!c)
@@ -151,13 +132,9 @@ export default function EntiteAdmin() {
                 if(error == ""){
                     setExcelResult(prv=>[prv[0] + 1 , prv[1]])
                     try {
-                        const res = await axios.post('http://localhost:5500/entiteAdmin',{
+                        await api.post('http://localhost:5500/entiteAdmin',{
                             libelle_ar : e["Libelle en Arabe"].trim(),
                             libelle_fr : e["Libelle en Français"].trim(),
-                        },{
-                            headers : {
-                                'authorization' : auth
-                            }
                         })
                         
                         setChanged(c=>!c)

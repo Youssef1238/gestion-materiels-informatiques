@@ -1,11 +1,15 @@
-
+const bcrypt = require('bcrypt')
 require('../config/DBconnect')
+require('dotenv').config()
 const User = require('../models/userSchema')
 
 const getUsers = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send("the id is required")
+    const id = req.user.userId;
         try{
-            const users = await User.find({_id : {$ne : req.params.id}})
+            const users = await User.find({_id : {$ne : id}})
+            for(const user of users){
+                user.password = undefined // remove password from response  
+            }
             res.json(users)
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
@@ -21,9 +25,10 @@ const addUser = async (req,res)=>{
     try{
         const foundUser = await User.findOne({pseudo : req.body.pseudo})
         if(foundUser) return res.status(409).send("Already used")
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             pseudo : req.body.pseudo,
-            password : req.body.password,
+            password : hashedPassword,
             admin : req.body.admin
         })
         user.save()
@@ -60,21 +65,10 @@ const deleteUser = async(req,res)=>{
     
 }
 
-const verifyUser = async (req,res)=>{
-    if(!req.body.pseudo || !req.body.password) return res.status(400).send("pseudo or password are missing!")
-        try{
-            const foundUser = await User.findOne({pseudo : req.body.pseudo})
-            if(!foundUser) return res.send("pseudo")
-            if(foundUser.password == req.body.password) res.status(200).send(foundUser)
-            else res.send("pass")
-        }catch(err){
-            res.status(500).json({title : "Server error",message : err.message})
-        }
-    
-}
 
 
 
 
 
-module.exports = {getUsers, addUser,UpdateUser,deleteUser,verifyUser}
+
+module.exports = {getUsers, addUser,UpdateUser,deleteUser}

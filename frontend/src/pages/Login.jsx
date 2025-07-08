@@ -1,16 +1,15 @@
-import axios from "axios"
 import { useRef, useState } from "react"
-import Cookies from 'js-cookie'
+import { useAuth } from "../auth/authContext"
 import { useNavigate } from "react-router-dom"
 
 export default function Login() {
     document.title = "Login"
-    const Navigate = useNavigate() 
     const pseudo = useRef()
     const pass = useRef()
+    const Navigate = useNavigate()
     // Pseudo , Pass 
     const [Error,setError] = useState(["",""])
-    
+    const { login } = useAuth();
 
     async function handelLogin() {
         const errorPseudo = pseudo.current.value.trim() == ""?"Required":""
@@ -19,29 +18,16 @@ export default function Login() {
 
         setError([errorPseudo,errorPass])
         if(errorPseudo == "" && errorPass  == ""){
-            try {
-                const res = await axios.post("http://localhost:5500/user/login",{
-                    "pseudo" : pseudo.current.value,
-                    "password" : pass.current.value
-                })
-                if(res.data == "pseudo")
-                    setError(["Incorrect Pseudo",""])
-                else if (res.data == "pass")
-                    setError(["","Incorrect Password"])
-                else{
-                    Cookies.set('id',res.data._id, { sameSite: 'None', secure: true })
-                    Cookies.set('admin',res.data.admin, { sameSite: 'None', secure: true })
+                const res = await login(pseudo.current.value, pass.current.value);
+                if(res.success) {
                     Navigate('/')
+                }else{
+                    if(res.error){
+                        Navigate('/error',res.message)
+                    }else{
+                        setError(res.message)
+                    }
                 }
-            } catch (error) {
-                if (error.response) {
-                    Navigate('/error',{state : {message : error.response.data ,code : error.response.status}})
-                } else if (error.request) {
-                    Navigate('/error',{state : {message :'No response received: ' + error.request}})
-                } else {
-                    Navigate('/error',{state : {message :'Error setting up the request: ' + error.message}})
-                }
-            }
         }
         
     }

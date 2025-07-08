@@ -1,10 +1,8 @@
-import axios from "axios"
+import api from "../utils/Api"
 import { useEffect, useRef, useState } from "react"
 import { DownloadIcon } from "../assets/Icons"
 import { useNavigate } from "react-router-dom"
-import Cookies from "js-cookie"
-
-export default function log() {
+export default function Log() {
 
     const [option,setOption] = useState(null)
     const numSerieInput = useRef(null)
@@ -16,25 +14,16 @@ export default function log() {
     const [entiteLog,setEntiteLog] = useState([])
     const [types,setTypes] = useState([])
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
 
 useEffect(()=>{
     const fetchData = async ()=>{
         try {
-            const Eres = await axios.get(`http://localhost:5500/entiteAdmin`,{
-                headers : {
-                    'authorization' : auth
-                }
-            })
+            const Eres = await api.get(`http://localhost:5500/entiteAdmin`)
             if(Eres.status == 500){
                 Navigate('/error',{state : {message : Eres.data.message}})
             }
             setEntiteAdmins(Eres.data)
-            const resT = await axios.get(`http://localhost:5500/type`,{
-                headers : {
-                    'authorization' : auth
-                }
-            })
+            const resT = await api.get(`http://localhost:5500/type`)
             setTypes(resT.data)
         } catch (error) {
             if (error.response) {
@@ -73,23 +62,11 @@ useEffect(()=>{
             setEntiteAdmin(null)
         }else{
             try {
-                const res = await axios.get(`http://localhost:5500/entiteLog/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/entiteLog/${e.target.value}`)
                 setEntiteLog(res.data)
-                const resA = await axios.get(`http://localhost:5500/articleLivre/entite/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const resA = await api.get(`http://localhost:5500/articleLivre/entite/${e.target.value}`)
                 setArticleLivres(resA.data)
-                const resE = await axios.get(`http://localhost:5500/entiteAdmin/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const resE = await api.get(`http://localhost:5500/entiteAdmin/${e.target.value}`)
                 setEntiteAdmin(resE.data)
             } catch (error) {
                 if (error.response) {
@@ -107,18 +84,10 @@ useEffect(()=>{
     async function handelNumSerieFilter(e){
         if(e.target.value != ""){
             try {
-                const resA = await axios.get(`http://localhost:5500/articleLivre/serie/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const resA = await api.get(`http://localhost:5500/articleLivre/serie/${e.target.value}`)
                 if(resA.data.length != 0){
                     setArticle(resA.data[0])
-                    const res = await axios.get(`http://localhost:5500/affectation/${resA.data[0]._id}`,{
-                        headers : {
-                            'authorization' : auth
-                        }
-                    })
+                    const res = await api.get(`http://localhost:5500/affectation/${resA.data[0]._id}`)
                     setAffectations(res.data)
                 }else{
                     setAffectations([])
@@ -142,24 +111,15 @@ useEffect(()=>{
         const entiteAdmin = entiteAdmins.filter(el=>el._id == log.entiteAdmin_id)[0].libelle_fr
         const date = log.date.split('T')[0]       
         try{
-            const res = await axios.post(`http://localhost:5500/articleLivre/items`,{
+            const res = await api.post(`http://localhost:5500/articleLivre/items`,{
                 itemsId : log.articles
-            },{
-                headers : {
-                    'authorization' : auth
-                }
             }) 
-            const response = await axios.post(`http://localhost:5500/generate`,{
+            const response = await api.post(`http://localhost:5500/generate`,{
                 decharge : log.affectation,
                 entiteAdmin : entiteAdmin,
                 date : date,
                 items : res.data
             }, {
-                
-                headers : {
-                        'authorization' : auth
-                },
-                
                 responseType: 'blob',  
             })
     

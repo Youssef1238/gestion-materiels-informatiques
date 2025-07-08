@@ -1,9 +1,7 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import api from "../utils/Api";
+import  { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../Components/NavBar";
-import Cookies from "js-cookie"
-
 
 
 export default function Acceuil ()  {
@@ -15,16 +13,13 @@ export default function Acceuil ()  {
     
     useEffect(()=>{
         
-      const auth = Cookies.get('id')
+      
         const fetch = async ()=>{
             try{
                 setLoading(true)
-                const res = await axios.get(`http://localhost:5500/stats`,{
-                  headers : {
-                    'authorization' : auth
-                }
                 
-                })
+                const res = await api.get(`http://localhost:5500/stats`)
+                
                 setStatsData(
                     [
                         {
@@ -86,6 +81,7 @@ export default function Acceuil ()  {
                       ]
                 )
             }catch(error){
+              console.error(error);
                 if (error.response) {
                     Navigate('/error',{state : {message : error.response.data ,code : error.response.status}})
                 } else if (error.request) {
@@ -98,17 +94,17 @@ export default function Acceuil ()  {
             }
             
         }
-        if(!auth) Navigate('/login')
-        else{
-          fetch()
-        }
+        fetch()
         
     },[])
 
     if(loading){
-        return (
-            <h1>LOADING ....</h1>
-        )
+        return <div className="w-full h-screen flex justify-center items-center">
+      <svg className="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2.93 6.364A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3.93-1.574z"></path>
+      </svg>
+    </div>;
     }
   return (
     <div>

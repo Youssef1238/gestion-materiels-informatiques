@@ -1,12 +1,11 @@
-import axios from "axios"
+import api from "../utils/Api";
 import { useEffect, useRef, useState } from "react"
 import * as XLSX from'xlsx'
 import ArticleLivre from "./ArticleLivre"
-import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon,ExpandIcon,CollapseIcon} from '../assets/Icons';
+import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,ExcelIcon,ExpandIcon,CollapseIcon} from '../assets/Icons';
 import { WarningModal } from "./WarningModal";
 import { useNavigate } from "react-router-dom";
 import NotificationExcelPanel from "./NotificationExcelPanel";
-import Cookies from "js-cookie"
 
 export default function ArticleMarche(props) {
 
@@ -47,48 +46,27 @@ export default function ArticleMarche(props) {
     const [isPanelVisible, setIsPanelVisible] = useState(false);
     const [ExcelResult, setExcelResult] = useState([0,0]);
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
 
     useEffect(()=>{
         const fetchData = async ()=>{
             
             try{
                 if(marche){
-                    const res = await axios.get(`http://localhost:5500/articleMarche/${marche._id}`,{
-                        headers : {
-                            'authorization' : auth
-                        }
-                    })
+                    const res = await api.get(`http://localhost:5500/articleMarche/${marche._id}`)
                     
                     setData(res.data)
                     setFliteredData(res.data)
                 }else if(props.marcheId){
-                    const resM = await axios.get(`http://localhost:5500/marche/${props.marcheId}`,{
-                        headers : {
-                            'authorization' : auth
-                        }
-                    })
+                    const resM = await api.get(`http://localhost:5500/marche/${props.marcheId}`)
                     setMarche(resM.data)
-                    const res = await axios.get(`http://localhost:5500/articleMarche/${props.marcheId}`,{
-                        headers : {
-                            'authorization' : auth
-                        }
-                    })
+                    const res = await api.get(`http://localhost:5500/articleMarche/${props.marcheId}`)
                     setData(res.data)
                     setFliteredData(res.data)
                 }
-                const tRes = await axios.get(`http://localhost:5500/type`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const tRes = await api.get(`http://localhost:5500/type`)
                 
                 setTypeData(tRes.data)
-                const mRes = await axios.get(`http://localhost:5500/marche`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const mRes = await api.get(`http://localhost:5500/marche`)
                 
                 setMarches(mRes.data)
             }catch(err){
@@ -132,7 +110,7 @@ export default function ArticleMarche(props) {
         if(error == ""){
 
             try{
-                const res = await axios.put('http://localhost:5500/articleMarche',{
+                await api.put('http://localhost:5500/articleMarche',{
                     id : id,
                     Numero : numeroInput.current.value,
                     type_id : typeInput.current.value,
@@ -143,10 +121,6 @@ export default function ArticleMarche(props) {
                     prix_unitaire : pruInput.current.value,
                     prix_totale : pruInput.current.value * qteInput.current.value
                     
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setUpdate(false)
@@ -192,7 +166,7 @@ export default function ArticleMarche(props) {
         setNError([errorNum,errorMarque,errorDesc,errorQte,errorPre,errorPru])
         if(error == ""){
             try {
-                const res = await axios.post('http://localhost:5500/articleMarche',{
+                await api.post('http://localhost:5500/articleMarche',{
                     marche_id : marche._id,
                     Numero : newNumeroInput.current.value,
                     type_id : newTypeInput.current.value,
@@ -202,10 +176,6 @@ export default function ArticleMarche(props) {
                     prix_estimatif : newPreInput.current.value,
                     prix_unitaire : newPruInput.current.value,
                     prix_totale : newPruInput.current.value * newQteInput.current.value
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setAjout(false)
@@ -226,13 +196,8 @@ export default function ArticleMarche(props) {
         const userConfirmed = await showModal();
         if(userConfirmed){
             try {
-                const res = await axios.delete('http://localhost:5500/articleMarche',{
-                    data : {id : id},
-                    
-                        headers : {
-                            'authorization' : auth
-                        }
-                    
+                await api.delete('http://localhost:5500/articleMarche',{
+                    data : {id : id}
                 })
                 
                 setChanged(c=>!c)
@@ -262,7 +227,7 @@ export default function ArticleMarche(props) {
                 if(error == ""){
                     setExcelResult(prv=>[prv[0] + 1 , prv[1]])
                     try {
-                        const res = await axios.post('http://localhost:5500/articleMarche',{
+                        await api.post('http://localhost:5500/articleMarche',{
                             marche_id : marche._id,
                             Numero : e["Numero"],
                             type_id : typeData.find(el=>el.libelle.toLowerCase() == e["Type"].trim().toLowerCase())._id,
@@ -272,10 +237,6 @@ export default function ArticleMarche(props) {
                             prix_estimatif : e["Prix estimatif"],
                             prix_unitaire : e["Prix unitaire"],
                             prix_totale : (e["Quantite"] * e["Prix unitaire"])
-                        },{
-                            headers : {
-                                'authorization' : auth
-                            }
                         })
                         
                         setChanged(c=>!c)
@@ -305,18 +266,10 @@ export default function ArticleMarche(props) {
         setselectedOption(e.target.value)
         if(e.target.value != ""){
             try {
-                const res = await axios.get(`http://localhost:5500/articleMarche/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/articleMarche/${e.target.value}`)
                 setData(res.data)
                 setFliteredData(res.data)
-                const resM = await axios.get(`http://localhost:5500/marche/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const resM = await api.get(`http://localhost:5500/marche/${e.target.value}`)
                 
                 setMarche(resM.data)
             } catch (err) {

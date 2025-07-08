@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { CloseIcon } from '../assets/Icons';
 const NotificationExcelPanel = ({ addedRows, declinedRows, duration = 10000 , visiblity, setVisible}) => {
 

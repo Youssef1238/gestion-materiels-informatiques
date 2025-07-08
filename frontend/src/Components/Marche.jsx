@@ -1,11 +1,10 @@
-import axios from "axios"
+import api from "../utils/Api";
 import { useEffect, useRef, useState } from "react"
 import * as XLSX from 'xlsx'
 import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon} from '../assets/Icons';
 import { WarningModal } from "./WarningModal";
 import { useNavigate } from "react-router-dom";
 import NotificationExcelPanel from "./NotificationExcelPanel";
-import Cookies from "js-cookie"
 
 export default function Marche(props) {
 
@@ -35,23 +34,14 @@ export default function Marche(props) {
     const fournisseurFilterInput = useRef()
     const referenceFilterInput = useRef()
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
 
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const res = await axios.get(`http://localhost:5500/marche`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/marche`)
                 setData(res.data)
                 setFilteredData(res.data)
-                const fRes = await axios.get(`http://localhost:5500/fournisseur`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const fRes = await api.get(`http://localhost:5500/fournisseur`)
                 
                 setFournisseur(fRes.data)
             }catch(err){
@@ -82,7 +72,7 @@ export default function Marche(props) {
         setError([errorType,errorObjet,errorReference])
         if(error == ""){
             try{
-                const res = await axios.put('http://localhost:5500/marche',{
+                await api.put('http://localhost:5500/marche',{
                     id : id,
                     objet : objetInput.current.value.trim(),
                     reference : referenceInput.current.value,
@@ -90,10 +80,6 @@ export default function Marche(props) {
                     fournisseur_id : fournisseurInput.current.value,
                     date_creation : dateInput.current.value
                     
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 setEditMode(null)
                 setChanged(c=>!c)
@@ -127,16 +113,12 @@ export default function Marche(props) {
         setNError([errorType,errorObjet,errorReference])
         if(error == ""){
             try {
-                const res = await axios.post('http://localhost:5500/marche',{
+                await api.post('http://localhost:5500/marche',{
                     objet : newObjetInput.current.value.trim(),
                     reference : newReferenceInput.current.value,
                     type : newTypeInput.current.value,
                     fournisseur_id : newFournisseurInput.current.value,
                     date_creation : newDateInput.current.value
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setAjout(false)
@@ -157,13 +139,8 @@ export default function Marche(props) {
         const userConfirmed = await showModal();
         if(userConfirmed){
             try {
-                const res = await axios.delete('http://localhost:5500/marche',{
-                    data : {id : id},
-                    
-                        headers : {
-                            'authorization' : auth
-                        }
-                    
+                await api.delete('http://localhost:5500/marche',{
+                    data : {id : id},              
                 })
                 
                 setChanged(c=>!c)
@@ -195,16 +172,12 @@ export default function Marche(props) {
                 if(error == ""){
                     setExcelResult(prv=>[prv[0] + 1 , prv[1]])
                     try {
-                        const res = await axios.post('http://localhost:5500/marche',{
+                        await api.post('http://localhost:5500/marche',{
                             objet : e["Objet"].trim(),
                             reference : e["Reference"],
                             type : e["Type"].trim(),
                             fournisseur_id : fournisseur.find(el=>el.nom.toLowerCase() == e["Fournisseur"].trim().toLowerCase())._id,
                             date_creation : new Date(e["Date de Creation"])
-                        },{
-                            headers : {
-                                'authorization' : auth
-                            }
                         })
                         
                         setChanged(c=>!c)
@@ -232,14 +205,10 @@ export default function Marche(props) {
             setFilteredData(data)
         }else{
             try {
-                const res = await axios.get(`http://localhost:5500/marche/fournisseur/${e.target.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/marche/fournisseur/${e.target.value}`)
                 setFilteredData(res.data)
                 
-            } catch (error) {
+            } catch (err) {
                 if (err.response) {
                     Navigate('/error',{state : {message : err.response.data ,code : err.response.status}})
                 } else if (err.request) {

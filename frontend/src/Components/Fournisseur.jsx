@@ -1,11 +1,10 @@
-import axios from "axios"
+import api from '../utils/Api';
 import * as XLSX from'xlsx'
 import {useEffect, useRef, useState } from "react"
-import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon,ExpandIcon,CollapseIcon} from '../assets/Icons';
+import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,ExcelIcon,ExpandIcon,CollapseIcon} from '../assets/Icons';
 import { WarningModal } from "./WarningModal";
 import { useNavigate } from "react-router-dom";
 import NotificationExcelPanel from "./NotificationExcelPanel";
-import Cookies from "js-cookie"
 
 export default function Fournisseur() {
 
@@ -43,17 +42,12 @@ export default function Fournisseur() {
     const [isPanelVisible, setIsPanelVisible] = useState(false);
     const [ExcelResult, setExcelResult] = useState([0,0]);
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
 
 
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const res = await axios.get(`http://localhost:5500/fournisseur`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/fournisseur`)
                 
                 setData(res.data)
             }catch(err){
@@ -77,7 +71,7 @@ export default function Fournisseur() {
         )
         if(error == ""){
             try{
-                const res = await axios.put('http://localhost:5500/fournisseur',{
+                await api.put('http://localhost:5500/fournisseur',{
                     id : id,
                     nom : nomInput.current.value.trim(),
                     qualite : qualiteInput.current.value.trim(),
@@ -90,10 +84,6 @@ export default function Fournisseur() {
                     adresse : adresseInput.current.value.trim(),
                     RIB : RIBInput.current.value.trim(),
                     
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setUpdate(false)
@@ -122,7 +112,7 @@ export default function Fournisseur() {
         )
         if(error == ""){
             try {
-                const res = await axios.post('http://localhost:5500/fournisseur',{
+                await api.post('http://localhost:5500/fournisseur',{
                     nom : newNomInput.current.value.trim(),
                     qualite : newQualiteInput.current.value.trim(),
                     nom_societe : newSocieteInput.current.value.trim(),
@@ -133,10 +123,6 @@ export default function Fournisseur() {
                     CNSS : newCNSSInput.current.value.trim(),
                     adresse : newAdresseInput.current.value.trim(),
                     RIB : newRIBInput.current.value.trim(),
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setAjout(false)
@@ -157,13 +143,8 @@ export default function Fournisseur() {
         const userConfirmed = await showModal();
         if(userConfirmed){
             try {
-                const res = await axios.delete('http://localhost:5500/fournisseur',{
-                    data : {id : id},
-                    
-                    headers : {
-                            'authorization' : auth
-                        }
-                    
+                await api.delete('http://localhost:5500/fournisseur',{
+                    data : {id : id}
                 })
                
                 setChanged(c=>!c)
@@ -187,14 +168,14 @@ export default function Fournisseur() {
             const workbook = XLSX.read(data, {type : ArrayBuffer})
             const sheet = workbook.Sheets[workbook.SheetNames[0]]
             const fournisseurs = XLSX.utils.sheet_to_json(sheet)
-            fournisseurs.forEach(async (e,i)=>{
+            fournisseurs.forEach(async (e,_)=>{
                 const error = ValidateInput(e["Nom"],e["Qualite"],e["Societe"],e["Capital"],e["Patente"],e["RC Lieu"],
                     e["RC Numero"],e["CNSS"],e["Adresse"],e["RIB"],2
                 )
                 if(error == ""){
                     setExcelResult(prv=>[prv[0] + 1 , prv[1]])
                     try {
-                        const res = await axios.post('http://localhost:5500/fournisseur',{
+                        await api.post('http://localhost:5500/fournisseur',{
                             nom : e["Nom"].trim(),
                             qualite : e["Qualite"].trim(),
                             nom_societe : e["Societe"].trim(),
@@ -205,10 +186,6 @@ export default function Fournisseur() {
                             CNSS : e["CNSS"],
                             adresse : e["Adresse"].trim(),
                             RIB : e["RIB"],
-                        },{
-                            headers : {
-                                'authorization' : auth
-                            }
                         })
                         
                         setChanged(c=>!c)

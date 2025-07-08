@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useState } from "react"
 import NavBar from "../Components/NavBar"
 import Marche from "../Components/Marche"
 import ArticleMarche from "../Components/ArticleMarche"
 import Affectation from "../Components/Affectation"
 import Log from "../Components/Log"
-import Cookies from "js-cookie"
 
 
 export default function Edit() {
     document.title = "Gestion"
     const [marcheId,setMarcheId] = useState(null)
     const [option,setOption] = useState(0)
-    const Navigate = useNavigate()
     const element = [<Marche setMarcheId={(id)=>setMarcheId(id)} setOption={(N)=>setOption(N)}/>,
                     <ArticleMarche marcheId={marcheId}/>,
                     <Affectation/>,<Log/>]
@@ -21,11 +18,7 @@ export default function Edit() {
         setOption(N)
         if(N != 1) setMarcheId(null)
     }
-useEffect(()=>{
-    const auth = Cookies.get('id')
-    if(!auth) Navigate('/login')
 
-},[])
 
 
 

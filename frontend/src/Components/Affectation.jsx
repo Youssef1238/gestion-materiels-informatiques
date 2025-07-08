@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import api from "../utils/Api";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie"
 
 
 
@@ -23,30 +22,17 @@ export default function Affectation() {
     const [file,setFile] = useState([])
     const date = useRef(null)
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
 
 useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const resEntiteAdmin = await axios.get(`http://localhost:5500/entiteAdmin`,{
-                        headers : {
-                            'authorization' : auth
-                        }
-                    })
+                const resEntiteAdmin = await api.get(`http://localhost:5500/entiteAdmin`)
                
                 setEntiteAdmin(resEntiteAdmin.data)
-                const resM = await axios.get(`http://localhost:5500/marche`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const resM = await api.get(`http://localhost:5500/marche`)
                 
                 setMarches(resM.data)
-                const resT = await axios.get(`http://localhost:5500/type`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const resT = await api.get(`http://localhost:5500/type`)
                 
                 setTypes(resT.data)
                 
@@ -66,26 +52,18 @@ useEffect(()=>{
 
 async function affecter(id,entiteId){
     try {
-        const resA = await axios.post('http://localhost:5500/affectation',
+        await api.post('http://localhost:5500/affectation',
             {
                 article_livre_id : id,
                 entiteAdmin_id : entiteId,
                 date_affectation : date.current.value
-            },{
-                headers : {
-                    'authorization' : auth
-                }
             }
         )
         
-        const resAR = await axios.put('http://localhost:5500/articleLivre',
+        await api.put('http://localhost:5500/articleLivre',
             {
                 id : id,
                 etat : true
-            },{
-                headers : {
-                    'authorization' : auth
-                }
             }
         )
         
@@ -104,18 +82,14 @@ async function handelAffectation(){
     if(file.length>0){
         file.forEach((e)=>{affecter(e._id,entiteId)})
         try {
-            const res1 = await axios.post(`http://localhost:5500/entiteLog`,{
+            await api.post(`http://localhost:5500/entiteLog`,{
                 entiteAdmin_id : entiteId,
                 date : date.current.value,
                 affectation : true,
                 articles : file
-            },{
-                headers : {
-                    'authorization' : auth
-                }
             })
             
-            const response = await axios.post(`http://localhost:5500/generate`,{
+            const response = await api.post(`http://localhost:5500/generate`,{
                 decharge : true,
                 entiteAdmin : entiteAdmins.filter(el=>el._id == entiteId)[0].libelle_fr,
                 date : date.current.value,
@@ -128,9 +102,7 @@ async function handelAffectation(){
                 })
             }, {
                 
-                headers : {
-                        'authorization' : auth
-                },
+                
                 responseType: 'blob',  
             })
             
@@ -175,11 +147,7 @@ async function handelRecuperationSwitch(){
     }else{
         setEntiteId(entiteInput.current.value)
         try {
-                const res = await axios.get(`http://localhost:5500/articleLivre/entite/${entiteInput.current.value}`,{
-                    headers : {
-                        'authorization' : auth
-                    }
-                })
+                const res = await api.get(`http://localhost:5500/articleLivre/entite/${entiteInput.current.value}`)
                 
                 setArticles(res.data)
         } catch (err) {
@@ -196,22 +164,14 @@ async function handelRecuperationSwitch(){
 }
 async function Recuperer(id){
     try {
-        const res1 = await axios.put("http://localhost:5500/affectation/recuperer",{
+        await api.put("http://localhost:5500/affectation/recuperer",{
             id : id,
             date_recuperation : date.current.value
-        },{
-            headers : {
-                'authorization' : auth
-            }
         })
        
-        const res2 = await axios.put("http://localhost:5500/articleLivre",{
+        await api.put("http://localhost:5500/articleLivre",{
             id : id,
             etat : false
-        },{
-            headers : {
-                'authorization' : auth
-            }
         })
         
     } catch (err) {
@@ -230,18 +190,14 @@ async function handelRecuperation() {
             Recuperer(e)
         })
         try {
-            const res1 = await axios.post(`http://localhost:5500/entiteLog`,{
+            await api.post(`http://localhost:5500/entiteLog`,{
                 entiteAdmin_id : entiteId,
                 date : date.current.value,
                 affectation : false,
                 articles : file.map(e=>e._id)
-            },{
-                headers : {
-                    'authorization' : auth
-                }
             })
             
-            const response = await axios.post(`http://localhost:5500/generate`,{
+            const response = await api.post(`http://localhost:5500/generate`,{
                 decharge : false,
                 entiteAdmin : entiteAdmins.filter(el=>el._id == entiteId)[0].libelle_fr,
                 date : date.current.value,
@@ -253,9 +209,7 @@ async function handelRecuperation() {
                     }
                 })
             }, {
-                headers : {
-                    'authorization' : auth
-                },
+                
                 responseType: 'blob',  
             })
             
@@ -284,11 +238,7 @@ async function handelArticle(e) {
         setArticles([])
         setFilteredArticles([])
     }else{
-        const res = await axios.get(`http://localhost:5500/articleLivre/marche/${e.target.value}`,{
-            headers : {
-                'authorization' : auth
-            }
-        })
+        const res = await api.get(`http://localhost:5500/articleLivre/marche/${e.target.value}`)
         if(res.status == 500){
             Navigate('/error',{state : {message : res.data.message}})
         }
@@ -308,11 +258,7 @@ function handelFilter(e){
 async function handelNumSerieFilter(e){
     if(e.target.value != ""){
         try {
-            const res = await axios.get(`http://localhost:5500/articleLivre/serie/${e.target.value}`,{
-                headers : {
-                    'authorization' : auth
-                }
-            })
+            const res = await api.get(`http://localhost:5500/articleLivre/serie/${e.target.value}`)
            
             marcheInput.current.value = ""
             setArticles(res.data)

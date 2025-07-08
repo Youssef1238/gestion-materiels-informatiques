@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from "../utils/Api";
 import { useEffect, useRef, useState  } from "react";
 import { useNavigate } from "react-router-dom"
-import Cookies from "js-cookie"
 import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon} from '../assets/Icons';
+import NotificationAccountCreated from "./NotificationAccountCreated";
 
 
 export default function Accounts() {
@@ -18,16 +18,13 @@ export default function Accounts() {
     const [pseduoError,setPseudoError] = useState()
     const [passError,setPassError] = useState()
     const Navigate = useNavigate()
-    const auth = Cookies.get('id')
+    const [isResultPanelVisible, setIsResultPanelVisible] = useState(false);
+    const [pass, setPass] = useState(null);
     useEffect(()=>{
         const fetch = async ()=>{
             try {
-                
-                const response = await axios.get(`http://localhost:5500/user/${auth}`,{
-                    headers : {
-                      'authorization' : auth
-                  }
-                })
+                setIsResultPanelVisible(false);
+                const response = await api.get(`http://localhost:5500/user`)
                 setData(response.data)
             } catch (error) {
                 if (error.response) {
@@ -45,13 +42,9 @@ export default function Accounts() {
 
     const updateUser = async (id)=>{
         try {
-            const response = await axios.put(`http://localhost:5500/user`,{
+            await api.put(`http://localhost:5500/user`,{
                 id : id,
                 admin : Admin.current.value
-            },{
-                headers : {
-                  'authorization' : auth
-              }
             })
             setChanged(c=>!c)
         } catch (error) {
@@ -68,11 +61,9 @@ export default function Accounts() {
     }
     const deleteUser = async (id)=>{
         try {
-            const response = await axios.delete(`http://localhost:5500/user`,{
-                data : {id : id},
-                headers : {
-                    'authorization' : auth
-                }
+            await api.delete(`http://localhost:5500/user`,{
+                data : {id : id}
+                
             },)
             
             setChanged(c=>!c)
@@ -97,15 +88,13 @@ export default function Accounts() {
 
         if(accessPseudo && accessPass){
             try {
-                const response = await axios.post(`http://localhost:5500/user`,{
+                await api.post(`http://localhost:5500/user`,{
                     pseudo : pseudoInput.current.value,
                     password : passInput.current.value,
                     admin : AdminInput.current.value,
-                },{
-                    headers : {
-                      'authorization' : auth
-                  }
                 })
+                setPass(passInput.current.value)
+                setIsResultPanelVisible(true)
                 setAjout(false)
                 setChanged(c=>!c)
                 
@@ -133,13 +122,14 @@ export default function Accounts() {
     return(
         
         <div className="h-screen mt-3 ml-3 w-full px-10">
+            {isResultPanelVisible && <NotificationAccountCreated password={pass} success={passError == "" && pseduoError == ""}  visiblity={isResultPanelVisible} setVisible={setIsResultPanelVisible}/> }
             <h1 className="font-bold text-blue-500 mb-2 text-center">Accounts</h1>
             <button className="my-3 bg-gray-100 " onClick={()=>setAjout(!Ajout)}><AddIcon/></button>
             <table className="mt-4 table-auto border-collapse border border-gray-300 w-full shadow-md">
                 <thead>
                     <tr className="bg-blue-500 text-white">
                         <th className="border border-gray-300 px-6 py-3">Pseudo</th>
-                        <th className="border border-gray-300 px-6 py-3">Password</th>
+                        {Ajout?<th className="border border-gray-300 px-6 py-3">Password</th>:null}
                         <th className="border border-gray-300 px-6 py-3">Role</th>
                         <th className="border border-gray-300 px-6 py-3"></th>
                         <th className="border border-gray-300 px-6 py-3"></th>
@@ -149,7 +139,7 @@ export default function Accounts() {
                 {data.map((e,i)=>{
                     return <tr key={i} className="odd:bg-gray-100 even:bg-gray-50 hover:bg-blue-100 text-sm">
                     <td className="border border-gray-300 px-6 py-3">{e.pseudo}</td>
-                    <td className="border border-gray-300 px-6 py-3">{e.password}</td>
+                    {Ajout?<td className="border border-gray-300 px-6 py-3">{e.password}</td>:null}
                     <td className="border border-gray-300 px-6 py-3">{editSubject != e._id?e.admin?"Admin":"Editeur":
                             <select ref={Admin} defaultValue={e.admin}>
                                 <option value={true}>Admin</option>
@@ -182,7 +172,6 @@ export default function Accounts() {
                 }
                 </tbody>
             </table>
-            
         </div>
         
     )

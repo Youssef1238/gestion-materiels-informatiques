@@ -1,11 +1,12 @@
-import axios from "axios"
+import api from '../utils/Api';
 import * as XLSX from'xlsx'
 import { useEffect, useRef, useState } from "react"
 import {EditIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon, DeleteIcon} from '../assets/Icons';
 import { useNavigate } from "react-router-dom";
 import NotificationExcelPanel from "./NotificationExcelPanel";
-import Cookies from "js-cookie"
 
+
+// eslint-disable-next-line react/prop-types
 export default function ArticleLivre({qte , articleId}) {
 
     const [editMode,setEditMode] = useState(null)
@@ -24,17 +25,12 @@ export default function ArticleLivre({qte , articleId}) {
     const Navigate = useNavigate()
     const [isPanelVisibleLivre, setIsPanelVisibleLivre] = useState(false);
     const [ExcelResultLivre, setExcelResultLivre] = useState([0,0]);
-    const auth = Cookies.get('id')
 
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
                 if(articleId){
-                    const res = await axios.get(`http://localhost:5500/articleLivre/${articleId}`,{
-                        headers : {
-                            'authorization' : auth
-                        }
-                    })
+                    const res = await api.get(`http://localhost:5500/articleLivre/${articleId}`)
                     
                     setData(res.data)
                 }
@@ -65,15 +61,11 @@ export default function ArticleLivre({qte , articleId}) {
         setError([errorSerie,errorCAB])
         if(error == ""){
             try{
-                const res = await axios.put('http://localhost:5500/articleLivre',{
+                await api.put('http://localhost:5500/articleLivre',{
                     id : id,
                     Numero_Serie : numeroSerieInput.current.value.trim(),
                     date_Livraison : dateLivraisonInput.current.value,
                     cab : cabInput.current.value.trim(),
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setEditMode(null)
@@ -107,22 +99,18 @@ export default function ArticleLivre({qte , articleId}) {
         setNError([errorSerie,errorCAB])
         if(error == ""){
             try {
-                const res = await axios.post('http://localhost:5500/articleLivre',{
+                await api.post('http://localhost:5500/articleLivre',{
                     article_marche_id : articleId,
                     Numero : num,
                     Numero_Serie : newNumeroSerieInput.current.value.trim(),
                     date_Livraison : newDateLivraisonInput.current.value,
                     cab : newCabInput.current.value.trim(),
                     etat : false
-                },{
-                    headers : {
-                        'authorization' : auth
-                    }
                 })
                 
                 setAjout(false)
                 setChanged(c=>!c)
-            } catch (error) {
+            } catch (err) {
                 if (err.response) {
                     Navigate('/error',{state : {message : err.response.data ,code : err.response.status}})
                 } else if (err.request) {
@@ -136,11 +124,7 @@ export default function ArticleLivre({qte , articleId}) {
     }
     async function deleteArticleLivres(){
         try {
-            const res = await axios.delete(`http://localhost:5500/articleLivre/${articleId}`,{
-                headers : {
-                    'authorization' : auth
-                }
-            })
+            await api.delete(`http://localhost:5500/articleLivre/${articleId}`)
             
             setChanged(c=>!c)
         } catch (err) {
@@ -155,12 +139,9 @@ export default function ArticleLivre({qte , articleId}) {
     }
     async function deleteArticleLivre(id){
         try {
-            const res = await axios.delete(`http://localhost:5500/articleLivre`,{
+            await api.delete(`http://localhost:5500/articleLivre`,{
                 data : {
                     id : id
-                },
-                headers : {
-                    'authorization' : auth
                 }
             })
             
@@ -191,17 +172,13 @@ export default function ArticleLivre({qte , articleId}) {
                     Numeros.push(e["Numero"])
                     setExcelResultLivre(prv=>[prv[0] + 1 , prv[1]])
                     try {
-                        const res = await axios.post('http://localhost:5500/articleLivre',{
+                        await api.post('http://localhost:5500/articleLivre',{
                             article_marche_id : articleId,
                             Numero : e["Numero"],
                             Numero_Serie : e["Numero de Serie"],
                             date_Livraison : new Date(e["Date de Livraison"]),
                             cab : e["CAB"],
                             etat : false
-                        },{
-                            headers : {
-                                'authorization' : auth
-                            }
                         })
                         
                         setChanged(c=>!c)
