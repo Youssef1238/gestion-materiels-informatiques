@@ -76,7 +76,7 @@ export default function Login() {
                     </p>
                 </div>
                 
-                <div className="w-[50%] flex flex-col gap-4 mt-20">
+                <div className="w-[50%] flex flex-col gap-4 mt-20" onKeyDown={(e)=> {if(e.key == "Enter") handelLogin()}}>
                     <div className="w-full flex flex-col gap-2">
                         <label htmlFor="pseudo" className="block text-primary font-semibold font-Montserrat mb-2">Pseudo</label>
                         <input type="text"id="pseudo"
@@ -99,7 +99,7 @@ export default function Login() {
                         />
                         <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[1] ? <AlertIcon/> : null }{Error[1] ?? " " }</p>
                     </div>
-                    <button onClick={()=>handelLogin()} className="w-full bg-primary hover:bg-secondary mt-6 text-white text-xl font-Montserrat font-medium py-2 px-4 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2">
+                    <button onClick={()=>handelLogin()} className="w-full bg-primary hover:bg-secondary mt-6 text-white text-xl focus:ring-2 focus:ring-secondary focus:ring-offset-2">
                     Login
                     </button>
                 </div>

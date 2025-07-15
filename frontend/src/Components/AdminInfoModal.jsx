@@ -3,8 +3,8 @@ import { CloseIcon } from "../assets/Icons";
 
 
 export default function AdminInfoModal({ isOpen, onClose, adminData }) {
-    if (!isOpen) return null;
     const [color, setColor] = useState("#000000");
+    if (!isOpen) return null;
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg  shadow-lg px-24 py-12 flex flex-col justify-center relative">

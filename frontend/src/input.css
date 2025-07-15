@@ -4,7 +4,7 @@
 
 @layer base {
     button {
-      @apply  rounded-md text-[1rem] bg-white border p-[10px] cursor-pointer hover:bg-gray-700 hover:text-white font-Roboto;
+      @apply  font-Montserrat font-medium py-2 px-4 rounded-md shadow focus:outline-none;
     }
     .input-base{
         @apply rounded-sm border border-gray-300 bg-white text-gray-700 placeholder-gray-400 focus:ring focus:ring-[#60A5FA] focus:ring-opacity-50 focus:border-[#60A5FA] shadow-sm transition; 

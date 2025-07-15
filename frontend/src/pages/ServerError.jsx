@@ -1,29 +1,33 @@
-import { useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { ServerOff } from "lucide-react";
 
 
 
 export default function ServerError() {
-    
+    const Navigate = useNavigate()
     document.title = "Server Error"
-    const location = useLocation()
-    console.log("state", location.state)
-    const Code = location.state.code ?? "Server Error"
-    const Message = location.state.message ?? "Uknown Error"
     return(
-        <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50">
-            <h1 className="text-9xl font-extrabold text-blue-600 mb-4">500</h1>
-            <p className="text-2xl text-blue-700 font-semibold mb-4">
-                {Code}
+        <div className="min-h-screen flex flex-col items-center justify-center bg-green-50 gap-8">
+            <ServerOff size={128} color='#7fd0c7'/>
+            <h1 className="text-9xl font-extrabold text-scondary mb-4 font-Montserrat">500</h1>
+            <p className="text-scondary text-center max-w-md mb-6 font-Montserrat text-xl">
+            Quelque chose s’est mal passé
+            Veuillez réessayer plus tard ou retourner à l’accueil.
             </p>
-            <p className="text-gray-600 text-center max-w-md mb-6">
-                {Message}
-            </p>
-            <a
-                href="/"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-                Go Back to Home
-            </a>
+            <div className='flex gap-4 items-center '>
+                <button
+                onClick={() => Navigate(window.history.back())}
+                className="bg-dark hover:bg-secondary text-white focus:ring-2 focus:ring-secondary focus:ring-offset-2 px-8 py-4 text-2xl"
+                >
+                Retry
+                </button>
+                <button
+                onClick={() => Navigate('/')}
+                className="hover:bg-primary hover:text-white text-2xl text-secondary px-8 py-4 border border-dark focus:ring-2 focus:ring-secondary focus:ring-offset-2"
+                >
+                Home
+                </button> 
+        </div>
         </div>
     
     )

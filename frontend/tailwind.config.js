@@ -12,6 +12,7 @@ export default {
       colors: {
         'primary': '#7fd0c7',
         'secondary': '#80C0D1',
+        'dark' : "#6E9693"
       },
       textColor: {
         'primary': '#273F3D',
