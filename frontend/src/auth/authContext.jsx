@@ -39,6 +39,7 @@ export const AuthProvider = ({children}) => {
                 }
                 
             } catch (error) {
+                
                 if (error.response) {
                     return {
                         success: false,
@@ -46,17 +47,19 @@ export const AuthProvider = ({children}) => {
                         message: error.response.data == "pseudo"?["Incorrect Pseudo",""] : ["","Incorrect Password"]
                     }
                 } else if (error.request) {
+                    console.error(error);
                     return {
                         success: false,
                         error : true,
-                        message: {state : {message :'No response received: ' + error.request}}
+                        message: {state : {message : error.message , code : error.code}}
                     }
                     
                 } else {
+                    
                     return {
                         success: false,
                         error : true,
-                        message: {state : {message :'Error setting up the request: ' + error.message}}
+                        message: {state : {message :'Error setting up the request', code : 'Request Error'}}
                     }
                 }
             }

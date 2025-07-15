@@ -36,4 +36,14 @@
     hr{
         @apply w-full border-black my-4 ;
     }
+    .bg-hero {
+    background-image: url('/images/LoginBg.png');
+    }
+    .bg-intro {
+    background-image: url('/images/IntroLogin.png');
+    }
+    .diagonal-cut{
+        clip-path: polygon(0% 0% , 100% 0%, 100% 80%, 0% 100%);
+    }
 }
+

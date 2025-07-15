@@ -9,6 +9,14 @@ export default {
         Montserrat: ['Montserrat', 'sans-serif'], 
         Roboto: ['Roboto', 'sans-serif'], 
       },
+      colors: {
+        'primary': '#7fd0c7',
+        'secondary': '#80C0D1',
+      },
+      textColor: {
+        'primary': '#273F3D',
+        'secondary': '#6E9693',
+      }
     },
   },
   plugins: [],

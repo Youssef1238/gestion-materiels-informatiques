@@ -2,19 +2,21 @@ import { useLocation } from "react-router-dom"
 
 
 
-export default function Page404() {
+export default function ServerError() {
+    
     document.title = "Server Error"
     const location = useLocation()
-    const Status = location.state.code | 500
-    const Message = location.state.message | "Error"
+    console.log("state", location.state)
+    const Code = location.state.code ?? "Server Error"
+    const Message = location.state.message ?? "Uknown Error"
     return(
         <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50">
-            <h1 className="text-9xl font-extrabold text-blue-600 mb-4">{Status | 500}</h1>
+            <h1 className="text-9xl font-extrabold text-blue-600 mb-4">500</h1>
             <p className="text-2xl text-blue-700 font-semibold mb-4">
-                Server Error
+                {Code}
             </p>
             <p className="text-gray-600 text-center max-w-md mb-6">
-                {Message == 0?"Uknown Error" : Message}
+                {Message}
             </p>
             <a
                 href="/"
@@ -28,4 +30,4 @@ export default function Page404() {
     
     
     
-    }
+}

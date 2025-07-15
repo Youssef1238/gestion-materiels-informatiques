@@ -53,7 +53,6 @@ const Logout = async (req,res)=>{
         sameSite: 'strict',
         path: '/auth/refresh', 
     });
-    console.log(res.cookies)
     res.status(204).send("Logged out successfully");
 }
 
