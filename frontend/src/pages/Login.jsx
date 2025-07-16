@@ -1,7 +1,8 @@
 import { useRef, useState } from "react"
 import { useAuth } from "../auth/authContext"
 import { useNavigate } from "react-router-dom"
-import  {AlertIcon} from "../assets/Icons.jsx"
+import {CircleAlert, MonitorCog} from 'lucide-react'
+
 import AdminInfoModal from "../Components/AdminInfoModal.jsx"
 
 export default function Login() {
@@ -55,9 +56,12 @@ export default function Login() {
             
             <div className="w-[50%] min-h-screen relative">
                 <div className="bg-primary w-full h-full diagonal-cut py-8 px-6 inset-1">
-                    <h1 className="text-4xl text-white font-Montserrat mt-14 mb-8">Gestion des Matériels Informatiques</h1>
+                  
+                    <h1 className="flex items-center gap-2 text-4xl text-white font-Montserrat mt-14 mb-8">
+                          <MonitorCog size={64}/>
+                        Gestion des Matériels Informatiques</h1>
                     <p className="text-2xl text-primary font-Roboto font-light">
-                        Plateforme de gestion du matériel informatique du  <b>Conseil Provincial d'Errachidia</b>.
+                        Plateforme de gestion du matériel informatique du  <b>Conseil Provincial d&apos;Errachidia</b>.
                     </p>
                     <div className="w-[50%] h-[50%] bg-intro bg-cover bg-center m-auto mt-8"></div>
                     
@@ -72,7 +76,7 @@ export default function Login() {
                     <h2 className="text-6xl font-Roboto font-light text-gray-700">Bienvenue</h2>
                     <p className="text-xl font-Montserrat text-primary font-light mt-6 text-wrap w-[80%] m-auto">
                         Si vous avez oublié vos coordonnées ou si vous ne possédez pas de compte, veuillez contacter
-                        <span className="font-medium text-secondary hover:text-primary cursor-pointer" onClick={openModal}> l'administrateur</span>.
+                        <span className="font-medium text-secondary hover:text-primary cursor-pointer" onClick={openModal}> l&apos;administrateur</span>.
                     </p>
                 </div>
                 
@@ -86,7 +90,7 @@ export default function Login() {
                         onChange={Clear}
                         required
                         />
-                        <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[0] ? <AlertIcon/> : null }{Error[0] ?? " " }</p>
+                        <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[0] ? <CircleAlert />: null }{Error[0] ?? " " }</p>
                     </div>
                     <div className="w-full flex flex-col gap-2">
                         <label htmlFor="password" className="block text-primary font-semibold font-Montserrat mb-2">Password</label>
@@ -97,7 +101,7 @@ export default function Login() {
                         onChange={Clear}
                         required
                         />
-                        <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[1] ? <AlertIcon/> : null }{Error[1] ?? " " }</p>
+                        <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[1] ? <CircleAlert /> : null }{Error[1] ?? " " }</p>
                     </div>
                     <button onClick={()=>handelLogin()} className="w-full bg-primary hover:bg-secondary mt-6 text-white text-xl focus:ring-2 focus:ring-secondary focus:ring-offset-2">
                     Login

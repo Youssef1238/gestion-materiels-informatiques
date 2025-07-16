@@ -1,14 +1,10 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
-import {Home,Parametre,LogOut,Edit} from "../assets/NavIcons"
-import { getAccessToken } from "../auth/tokenService"
 import  {useAuth}  from "../auth/authContext"
-
+import {House , Settings2} from 'lucide-react'
 
 export default function NavBar() {
 
     const { logout , AccessToken } = useAuth();
-    const [Focus,setFocus] = useState(null)
     const logged = AccessToken != null
     const Navigate = useNavigate()
     const Logout = async () => {
@@ -19,11 +15,23 @@ export default function NavBar() {
 
 
     return(
-        <nav className="bg-[#1A202C] w-full p-5 flex gap-3 justify-evenly">
-            <Link className="cursor-pointer flex justify-center items-center" to='/' onMouseEnter={()=>setFocus(0)} onMouseLeave={()=>setFocus(null)}><Home h={"40px"} w={"40px"} Hover={Focus==0} Active={window.location.href.split('/').at(-1) == ""}/></Link>
-            <Link className="text-white cursor-pointer text-[1.2rem]" to='/Edit' onMouseEnter={()=>setFocus(1)} onMouseLeave={()=>setFocus(null)}><Edit h={"40px"} w={"40px"} Hover={Focus==1} Active={window.location.href.split('/').at(-1) == "Edit"}/></Link>
-            <Link className="cursor-pointer flex justify-center items-center" to='/parametre' onMouseEnter={()=>setFocus(2)} onMouseLeave={()=>setFocus(null)}><Parametre h={"40px"} w={"40px"} Hover={Focus==2} Active={window.location.href.split('/').at(-1) == "parametre"}/></Link>
-            {logged?<Link className="cursor-pointer flex justify-center items-center" onClick={()=>Logout()} onMouseEnter={()=>setFocus(3)} onMouseLeave={()=>setFocus(null)}><LogOut h={"40px"} w={"40px"} Hover={Focus==3}/></Link> :null}
+        <nav className="sticky top-0 bg-gray-100 w-full py-5 px-12 flex justify-between items-center border border-b-gray-400 border-b-2" id="nav">
+            <Link to={'/'} className="p-2">
+                <House size={48}/>
+            </Link>
+            <div className="flex items-center justify-center grow gap-2">
+                <input type="text" name="query" id="query" 
+                className="text-black rounded-full w-2/3 border-2 border-primary bg-white px-4 py-2"
+                placeholder="Entrer la réference de marché"
+                />
+                <select name="type" id="type" className="border-primary border-2 rounded-full px-4 py-2 font-Montserrat">
+                    <option className="border-primary hover:text-white hover:bg-primary bg-white text-black  px-4 py-2 font-Montserrat rounded-full" value="Marché">Marché</option>
+                    <option className="border-primary bg-white text-black px-4 py-2 font-Montserrat" value="Article">Article</option>
+                </select>
+                
+            </div>
+            <Settings2 size={48}/>
         </nav>
+            
     )
 }
