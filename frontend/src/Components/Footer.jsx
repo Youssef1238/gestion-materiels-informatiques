@@ -15,17 +15,11 @@ export default function Footer(){
                         <p className="text-lg font-bold font-Montserrat text-black mt-2">
                             © 2025 Conseil de Province
                         </p>
-                        {/* <button
-                            
-                            className="bg-dark hover:bg-primary text-white focus:ring-2 focus:ring-secondary focus:ring-offset-2 px-12 text-2xl mt-4 rounded-full"
-                            >
-                            <a href="#nav"><ArrowBigUpDash size={48} /></a>
-                        </button> */}
                         <button
                             
                             className="border border-[#0A2463] text-[#0A2463] hover:opacity-60 focus:ring-2 focus:ring-secondary focus:ring-offset-2 px-10 text-2xl mt-4 rounded-none"
                             >
-                            <a className='flex gap-2 items-center' href="#nav"><ArrowBigUpDash size={48} color='#0A2463'/> Back to Top</a>
+                            <a className='flex gap-2 items-center' href="/#nav"><ArrowBigUpDash size={48} color='#0A2463'/> Back to Top</a>
                         </button>
                         
                     </div>

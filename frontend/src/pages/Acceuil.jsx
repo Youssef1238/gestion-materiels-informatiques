@@ -1,20 +1,22 @@
 import api from "../utils/Api";
-import  { useEffect, useState } from "react";
+import  { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../Components/NavBar";
-import Footer from "../Components/Footer";
+import Layout from "@/Components/layout/layout";
+import { ArrowDown } from "lucide-react";
+import KpiCard from "@/Components/KpiCard";
+import { Line, Pie } from "react-chartjs-2";
+import OverviewCard from "@/Components/OverviewCard";
+
+
 
 
 export default function Acceuil ()  {
     document.title = "Acceuil"
-    const [loading,setLoading] = useState(true)
+    const [loading,setLoading] = useState(true) 
     const Navigate = useNavigate()
     const [statsData,setStatsData] = useState([])
-    
-    
+    const lineChart = useRef();
     useEffect(()=>{
-        
-      
         const fetch = async ()=>{
             try{
                 setLoading(true)
@@ -95,6 +97,7 @@ export default function Acceuil ()  {
             }
             
         }
+        if(lineChart.current) lineChart.current.destroy()
         fetch()
         
     },[])
@@ -108,62 +111,77 @@ export default function Acceuil ()  {
     </div>;
     }
   return (
-    <div>
-    <NavBar/>
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-blue-700 text-center mb-8">
-        Acceuil
-      </h1>
-      <div className="space-y-8">
-        {statsData.map((section, index) => (
-          <div key={index} className="bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-blue-600 mb-4">
-              {section.title}
-            </h2>
-            {Array.isArray(section.stats[0].value) ? (
-              // For nested stats (Section 5)
-              section.stats.map((stat, i) => (
-                <div key={i} className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-700">
-                    {stat.name}
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4 mt-2">
-                    {stat.value.map((subStat, j) => (
-                      <div
-                        key={j}
-                        className="p-4 bg-gray-50 rounded-lg border border-gray-200"
-                      >
-                        <p className="text-gray-600">{subStat.name}</p>
-                        <p className="text-2xl font-bold text-blue-700">
-                          {subStat.value}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))
-            ) : (
-              // For regular stats
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {section.stats.map((stat, i) => (
-                  <div
-                    key={i}
-                    className="p-4 bg-gray-50 rounded-lg border border-gray-200"
-                  >
-                    <p className="text-gray-600">{stat.name}</p>
-                    <p className="text-2xl font-bold text-blue-700">
-                      {stat.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+    <Layout>
+      <div className="w-full min-h-fit py-16 px-2 flex gap-8 items-center" id="hero">
+        <div className="w-full flex flex-col gap-8 grow px-4">
+          <h1 className="text-4xl text-black font-bold font-Montserrat mt-12 ">Bienvenue sur la Plateforme de Gestion des matériels informatiques</h1>
+          <p className="text-xl font-light font-Montserrat text-gray-600 max-w-[60%]">
+            la platforme officielle pour gérer les matériels informatiques et leur circulation dans les entités 
+            Administratives sous la Conseil Provincial d'Errachidia. 
+          </p>
+          <div className="flex gap-4 items-center mt-12">
+            <button className="flex items-center text-gray-600 border-2 border-primary">Commencer la gestion <ArrowDown/></button>
           </div>
-        ))}
+        </div>
+        <img src="/images/IntroLogin.png" alt="" className=" w-1/3"/>
       </div>
-    </div>
-    <Footer/>
-    </div>
+      <div id="stats" className="w-full min-h-fit bg-gray-50 py-24 px-8 grid grid-cols-2 gap-2">
+        <KpiCard title={"Marché"} total={514} day={2} month={20} year={114}/>
+        <KpiCard title={"Article"} total={514} day={2} month={20} year={114}/>
+        <KpiCard title={"Finance"} total={514} day={2} month={20} year={114}/>
+        <KpiCard title={"Activity"} total={514} day={2} month={20} year={114}/>
+      </div>
+      <div id="charts" className="w-full min-h-fit py-24 px-8 grid grid-cols-2 gap-2">
+          <div className="bg-gray-50 rounded-sm p-4">
+            <Pie
+                  id="0"
+                  data={ {
+                    labels: [
+                      'Affecté',
+                      'Non Affecté'
+                    ],
+                    datasets: [{
+                      label: 'Total',
+                      data: [110, 50],
+                      backgroundColor: [
+                        '#7fd0c7',
+                        '#4b5563'
+                      ],
+                      hoverOffset: 4
+                    }]
+
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false
+                }}
+            />
+          </div>
+          <div className="bg-gray-50 rounded-sm p-4">
+            <Line
+                  id="1"
+                  ref={lineChart}
+                  data={ {
+                    labels: ["July", "August", "September", "October", "November", "December", "January"],
+                    datasets: [{
+                      label: "Total d'affectation",
+                      data: [65, 59, 80, 81, 56, 55, 40],
+                      fill: false,
+                      borderColor: 'rgb(75, 192, 192)',
+                      tension: 0.1
+                    }]
+                }}
+                
+            />
+          </div>
+      </div>
+      <div id="overview" className="w-full min-h-fit bg-gray-50 py-24 px-8 grid grid-cols-2 gap-2">
+                <OverviewCard title={"Chercher"}/>
+                <OverviewCard title={"Gérer"}/>
+                <OverviewCard title={"Affecter"}/>
+                <OverviewCard title={"Récuperer"}/>
+      </div>
+    </Layout>
   );
 };
 

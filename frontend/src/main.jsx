@@ -9,6 +9,13 @@ import Edit from './pages/Edit.jsx'
 import ServerError from './pages/ServerError.jsx'
 import Acceuil from './pages/Acceuil.jsx'
 import { AuthProvider } from './auth/authContext.jsx'
+import {
+  Chart as ChartJS,
+  registerables
+} from 'chart.js';
+import Manage from './pages/Manage.jsx'
+
+ChartJS.register(...registerables);
 
 
 const router = createBrowserRouter(
@@ -35,10 +42,10 @@ const router = createBrowserRouter(
       element : <Login/>
     },
     {
-      path : "/Edit",
+      path : "/Gerer",
       element :
       <ProtectedRoute>
-        <Edit/>
+        <Manage/>
       </ProtectedRoute>  
     },
 
