@@ -1,9 +1,9 @@
-import api from '../utils/Api';
+import api from '../../utils/Api';
 import * as XLSX from'xlsx'
 import { useEffect, useRef, useState } from "react"
-import {EditIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon, DeleteIcon} from '../assets/Icons';
+import {EditIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon,ExcelIcon, DeleteIcon} from '../../assets/Icons';
 import { useNavigate } from "react-router-dom";
-import NotificationExcelPanel from "./NotificationExcelPanel";
+import NotificationExcelPanel from "../NotificationExcelPanel";
 
 
 // eslint-disable-next-line react/prop-types

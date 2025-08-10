@@ -1,6 +1,6 @@
-import api from "../utils/Api"
+import api from "../../utils/Api"
 import { useEffect, useRef, useState } from "react"
-import { DownloadIcon } from "../assets/Icons"
+import { DownloadIcon } from "../../assets/Icons"
 import { useNavigate } from "react-router-dom"
 export default function Log() {
 

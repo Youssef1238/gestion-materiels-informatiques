@@ -4,10 +4,10 @@
 
 @layer base {
     button {
-      @apply  font-Montserrat font-medium py-2 px-4 rounded-md shadow focus:outline-none;
+      @apply  font-Montserrat font-medium py-2 px-4 rounded-md shadow focus:outline-none ;
     }
     .input-base{
-        @apply rounded-sm border border-gray-300 bg-white text-gray-700 placeholder-gray-400 focus:ring focus:ring-[#60A5FA] focus:ring-opacity-50 focus:border-[#60A5FA] shadow-sm transition; 
+        @apply rounded-sm bg-white text-gray-700 placeholder-gray-400  border border-primary shadow-sm transition-all; 
     }
     input[type = "file"]{
         @apply ml-2; 
@@ -20,9 +20,6 @@
     }
     h2{
         @apply text-3xl font-semibold text-gray-700 font-poppins;
-    }
-    td{
-        @apply border border-black p-1;
     }
     label{
         @apply text-lg font-medium text-gray-700;

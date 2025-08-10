@@ -1,11 +1,11 @@
-import api from "../utils/Api";
+import api from "../../utils/Api";
 import { useEffect, useRef, useState } from "react"
 import * as XLSX from'xlsx'
 import ArticleLivre from "./ArticleLivre"
-import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,ExcelIcon,ExpandIcon,CollapseIcon} from '../assets/Icons';
-import { WarningModal } from "./WarningModal";
+import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,ExcelIcon,ExpandIcon,CollapseIcon} from '../../assets/Icons';
+import { WarningModal } from "../WarningModal";
 import { useNavigate } from "react-router-dom";
-import NotificationExcelPanel from "./NotificationExcelPanel";
+import NotificationExcelPanel from "../NotificationExcelPanel";
 
 export default function ArticleMarche(props) {
 

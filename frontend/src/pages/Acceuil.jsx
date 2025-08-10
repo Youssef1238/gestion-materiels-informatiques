@@ -112,7 +112,7 @@ export default function Acceuil ()  {
     }
   return (
     <Layout>
-      <div className="w-full min-h-fit py-16 px-2 flex gap-8 items-center" id="hero">
+      <div className="w-full min-h-fit py-8 px-2 flex gap-8 items-center" id="hero">
         <div className="w-full flex flex-col gap-8 grow px-4">
           <h1 className="text-4xl text-black font-bold font-Montserrat mt-12 ">Bienvenue sur la Plateforme de Gestion des matériels informatiques</h1>
           <p className="text-xl font-light font-Montserrat text-gray-600 max-w-[60%]">

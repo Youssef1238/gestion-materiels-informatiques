@@ -1,10 +1,10 @@
 import {useState } from "react"
-import Fournisseur from "../Components/Fournisseur"
-import EntiteAdmin from "../Components/EntiteAdmin"
-import Type from "../Components/Type"
+import Fournisseur from "../Components/old/Fournisseur"
+import EntiteAdmin from "../Components/old/EntiteAdmin"
+import Type from "../Components/old/Type"
 import NavBar from "../Components/NavBar"
-import Accounts from "../Components/Accounts"
-import Templates from "../Components/Templates"
+import Accounts from "../Components/old/Accounts"
+import Templates from "../Components/old/Templates"
 import {jwtDecode} from 'jwt-decode';
 import { useAuth } from "../auth/authContext"
 

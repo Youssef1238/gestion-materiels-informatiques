@@ -1,9 +1,9 @@
 import { useState } from "react"
 import NavBar from "../Components/NavBar"
-import Marche from "../Components/Marche"
-import ArticleMarche from "../Components/ArticleMarche"
-import Affectation from "../Components/Affectation"
-import Log from "../Components/Log"
+import Marche from "../Components/old/Marche"
+import ArticleMarche from "../Components/old/ArticleMarche"
+import Affectation from "../Components/old/Affectation"
+import Log from "../Components/old/Log"
 
 
 export default function Edit() {

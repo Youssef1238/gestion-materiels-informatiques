@@ -1,8 +1,8 @@
-import api from "../utils/Api";
+import api from "../../utils/Api";
 import { useEffect, useRef, useState  } from "react";
 import { useNavigate } from "react-router-dom"
-import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon} from '../assets/Icons';
-import NotificationAccountCreated from "./NotificationAccountCreated";
+import {EditIcon,DeleteIcon,CloseIcon,AddIcon,SaveIcon,UpdateIcon} from '../../assets/Icons';
+import NotificationAccountCreated from "../NotificationAccountCreated";
 
 
 export default function Accounts() {
