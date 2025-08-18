@@ -1,9 +1,8 @@
 import {
   PopoverContent,
 } from "@/components/ui/popover"
-import { useState } from "react";
 
-export default function Filter({children , title , onApply , setIsOpen}) {
+export default function Filter({children , title , onApply , setIsOpen, setDefaultValues}) {
         return (
         <PopoverContent className="bg-gray-100 flex flex-col justify-start p-1"
         >
@@ -11,7 +10,7 @@ export default function Filter({children , title , onApply , setIsOpen}) {
                 <h2 className="text-sm font-Montserrat font-semibold">{title}</h2>
                 <hr className=" bg-gray-50" />
             </div>
-            <form id="filter-form" onSubmit={(e)=>{e.preventDefault(); onApply(new FormData(e.currentTarget)); setIsOpen(false)}}  className="flex flex-col gap-2 p-2">
+            <form id="filter-form" onSubmit={(e)=>{e.preventDefault(); onApply(new FormData(e.currentTarget)); setIsOpen(false)}} onReset={()=>setDefaultValues([])}   className="flex flex-col gap-2 p-2">
                 {children}
                 
                 <div className="flex justify-between items-center gap-4 mt-4">

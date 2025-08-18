@@ -1,13 +1,18 @@
 
 require('../config/DBconnect')
 const Marche = require('../models/marcheSchema')
+const Fournisseur = require('../models/fourinsseurSchema')
 const ArticleMarche = require('../models/articleMarcheSchema')
 const ArticleLivre = require('../models/articleLivreSchema')
 
 const getMarches = async (req,res)=>{
     try{
         const marches = await Marche.find()
-        res.json(marches)
+        const fournisseurs = await Fournisseur.find()
+        
+        res.json(marches.map((i,_)=> {
+            return {...i._doc , fournisseur : fournisseurs.find(e=>e._id == i.fournisseur_id).nom}
+         }))
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
     }

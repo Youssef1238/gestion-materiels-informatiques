@@ -4,7 +4,7 @@
 
 @layer base {
     button {
-      @apply  font-Montserrat font-medium py-2 px-4 rounded-md shadow focus:outline-none ;
+      @apply  font-Montserrat font-medium py-2 px-4 rounded-md shadow focus:outline-none disabled:pointer-events-none;
     }
     .input-base{
         @apply rounded-sm bg-white text-gray-700 placeholder-gray-400  border border-primary shadow-sm transition-all; 
@@ -32,6 +32,15 @@
     }
     hr{
         @apply w-full border-black my-4 ;
+    }
+    .custom-progress {
+        @apply h-2 w-full rounded-full overflow-hidden;
+    }
+    .custom-progress::-webkit-progress-bar {
+        @apply bg-gray-300 rounded-full;
+    }
+    .custom-progress::-webkit-progress-value {
+        @apply  bg-primary rounded-full;
     }
     .bg-hero {
     background-image: url('/images/LoginBg.png');

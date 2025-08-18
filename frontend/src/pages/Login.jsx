@@ -40,7 +40,7 @@ export default function Login() {
                     Navigate('/')
                 }else{
                     if(res.error){
-                        Navigate('/error',res.message)
+                        Navigate('/error')
                     }else{
                         setError(res.message)
                     }

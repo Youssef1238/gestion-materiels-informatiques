@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const articleMarcheSchema = mongoose.Schema(
 
     {
-        marche_id : String,
+        marche_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Marche', index: true },
         Numero : Number,
         type_id : String,
         marque : String,
@@ -18,5 +18,5 @@ const articleMarcheSchema = mongoose.Schema(
 
     }
 )
-
+articleMarcheSchema.index({ marche_id: 1 });
 module.exports = mongoose.model('ArticleMarche',articleMarcheSchema);

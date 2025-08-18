@@ -1,13 +1,15 @@
+import api from "@/utils/Api";
 import { CircleAlert, Lock, RotateCcw, Unlock, UploadIcon } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function EntitéAdminForm({ type, onClose }) {
+export default function EntitéAdminForm({ type, onClose, data }) {
 
             switch(type) {
                 case 'add':   
                     return <AddEntitéAdminForm onClose={onClose}/>;
                 case 'detail':
-                    return <DetailEntitéAdminForm onClose={onClose}/>;
+                    return <DetailEntitéAdminForm onClose={onClose} EntiteAdmin={data}/>;
                 default:
                     return null;
                 
@@ -19,7 +21,8 @@ export default function EntitéAdminForm({ type, onClose }) {
 const AddEntitéAdminForm = ({onClose}) => {
     // LibelleAR , LibelleFR 
     const [Error,setError] = useState(["",""])
-    const handleSubmit = (e) => {
+    const Navigate = useNavigate()
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
@@ -35,7 +38,17 @@ const AddEntitéAdminForm = ({onClose}) => {
 
         setError([errorLibelleFR,errorLibelleAR])
         if(error == ""){
-            onClose();
+            try {
+                await api.post('http://localhost:5500/entiteAdmin',{
+                    libelle_ar : data["libelleAR"].trim(),
+                    libelle_fr : data["libelleFR"].trim(),
+                })
+                
+                onClose();
+            } catch (err) {
+                Navigate('/error')
+            }
+           
         }
     }
             return (
@@ -74,15 +87,13 @@ const AddEntitéAdminForm = ({onClose}) => {
                
             );
 }
-const DetailEntitéAdminForm = ({onClose , id}) => {
+const DetailEntitéAdminForm = ({onClose , EntiteAdmin}) => {
     const [Error,setError] = useState(["",""])
     const [Locked,setLocked] = useState(false)
-    const EntitéAdmin = {
-        libelleAR: "زعما را",
-        libelleFR: "Service de zama Ra"
-    }
-    const handleSubmit = (e) => {
-       const formData = new FormData(e.target);
+    const Navigate = useNavigate()
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         const regex1 = /[^A-Za-z\s]/;
         const regex2 = /^[\u0600-\u06FF\s]+$/;
@@ -96,7 +107,17 @@ const DetailEntitéAdminForm = ({onClose , id}) => {
 
         setError([errorLibelleFR,errorLibelleAR])
         if(error == ""){
-            onClose();
+            try {
+                await api.put('http://localhost:5500/entiteAdmin',{
+                    id : EntiteAdmin._id,
+                    libelle_ar : data["libelleAR"].trim(),
+                    libelle_fr : data["libelleFR"].trim()
+                })
+                
+                onClose();
+            } catch (err) {
+                Navigate('/error')
+            }
         }
     }
             return (
@@ -110,7 +131,7 @@ const DetailEntitéAdminForm = ({onClose , id}) => {
                         <div className="w-full  flex flex-col justify-center items-center gap-8 px-8">
                                 <div className="flex flex-col gap-3 flex-start w-full">
                                     <label htmlFor="libelleAR" className="text-sm font-medium font-Roboto ">libelle en Arabe</label>
-                                    <input type="text" id="libelleAR" defaultValue={EntitéAdmin.libelleAR} placeholder="libelle en Arabe" name="libelleAR" disabled={Locked} className={"input-base w-full px-4 py-2 text-xs disabled:border-gray-300 " + (Error[0]?"border-red-500":"")}/>
+                                    <input type="text" id="libelleAR" defaultValue={EntiteAdmin.libelle_ar} placeholder="libelle en Arabe" name="libelleAR" disabled={Locked} className={"input-base w-full px-4 py-2 text-xs disabled:border-gray-300 " + (Error[0]?"border-red-500":"")}/>
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[0] ? <CircleAlert size={16}/>: null }{Error[0] ?? " " }</p>
                                 </div>
                         </div>
@@ -118,7 +139,7 @@ const DetailEntitéAdminForm = ({onClose , id}) => {
                         <div className="w-full px-8 flex gap-2 justify-start items-center">
                             <div className="flex flex-col gap-3  w-full">
                                     <label htmlFor="libelleFR" className="text-sm font-medium font-Roboto">libelle en Français</label>
-                                    <input type="text" defaultValue={EntitéAdmin.libelleFR} id="libelleFR" placeholder="libelle en Français" name="libelleFR" disabled={Locked}  className={"input-base w-full px-4 py-2 text-xs  disabled:border-gray-300 " + (Error[1]?"border-red-500":"")}/>
+                                    <input type="text" defaultValue={EntiteAdmin.libelle_fr} id="libelleFR" placeholder="libelle en Français" name="libelleFR" disabled={Locked}  className={"input-base w-full px-4 py-2 text-xs  disabled:border-gray-300 " + (Error[1]?"border-red-500":"")}/>
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[1] ? <CircleAlert size={16}/>: null }{Error[1] ?? " " }</p>
                             </div> 
                             

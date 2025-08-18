@@ -8,7 +8,52 @@ const Type = require('../models/typeArticleSchema')
 
 const getArticleLivres = async (req,res)=>{
     try{
-        const articleLivres = await ArticleLivre.find()
+        const articleLivres = await ArticleLivre.aggregate([
+            
+            {
+                $lookup: {
+                    from: 'articlemarches', 
+                    localField: 'article_marche_id',
+                    foreignField: '_id',
+                    as: 'articleMarcheDetails' 
+                }
+            },
+            
+            {
+                $unwind: {
+                    path: '$articleMarcheDetails',
+                    preserveNullAndEmptyArrays: true 
+                }
+            },
+            
+            {
+                $lookup: {
+                    from: 'marches', 
+                    localField: 'articleMarcheDetails.marche_id', 
+                    foreignField: '_id',
+                    as: 'marcheDetails'
+                }
+            },
+            
+            {
+                $unwind: {
+                    path: '$marcheDetails',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            
+            {
+                $project: {
+                    _id: 1,
+                    Numero: 1,
+                    Numero_Serie: 1,
+                    date_Livraison: 1,
+                    cab: 1,
+                    etat: 1,
+                    marcheReference: '$marcheDetails.reference'
+                }
+            }
+        ]);
         res.json(articleLivres)
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})

@@ -1,25 +1,43 @@
+import api from "@/utils/Api";
 import { CircleAlert, Lock, RotateCcw, Unlock, UploadIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function TypeForm({ type, onClose }) {
-
-            switch(type) {
-                case 'add':   
-                    return <AddTypeForm onClose={onClose}/>;
-                case 'detail':
-                    return <DetailTypeForm onClose={onClose}/>;
-                default:
-                    return null;
-                
+export default function TypeForm({ type, onClose , data }) {
+        
+        const [Types,setTypes] = useState()
+        const Navigate = useNavigate()
+        useEffect(()=>{
+            const fetchData = async ()=>{
+                try{
+                    const res = await api.get(`http://localhost:5500/type`)
+                    setTypes(res.data)
+                }catch(err){
+                    
+                    Navigate('/error')
+                }
             }
+            fetchData()
+        })
+            
+        switch(type) {
+            case 'add':   
+                return <AddTypeForm onClose={onClose} Types={Types}/>;
+            case 'detail':
+                return <DetailTypeForm onClose={onClose} Type={data} Types={Types}/>;
+            default:
+                return null;
+            
+        }
 
 }
 
 
-const AddTypeForm = ({onClose}) => {
+const AddTypeForm = ({onClose , Types}) => {
     // Libelle , order 
     const [Error,setError] = useState(["",""])
-    const handleSubmit = (e) => {
+    const Navigate = useNavigate()
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -28,7 +46,7 @@ const AddTypeForm = ({onClose}) => {
         const regex2 = /^[0-9]+$/;
         const number = Number(data["Order"])
         const errorLibelle = data["Libelle"] ?regex1.test(data["Libelle"])?data["Libelle"].trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorOrder = data["Order"] && regex2.test(data["Order"])?!data.map(e=>e.order).includes(number)?
+        const errorOrder = data["Order"] && regex2.test(data["Order"])?!Types.map(e=>e.order).includes(number)?
         number <= 0?"not Valid":
         "":
         "Already exists"
@@ -40,7 +58,16 @@ const AddTypeForm = ({onClose}) => {
 
         setError([errorLibelle,errorOrder])
         if(error == ""){
-            onClose();
+            try {
+                await api.post('http://localhost:5500/type',{
+                    libelle : data["Libelle"],
+                    order : data["Order"]
+                })
+                onClose();
+            } catch (err) {
+                    Navigate('/error')
+            }
+           
         }
     }
             return (
@@ -79,15 +106,12 @@ const AddTypeForm = ({onClose}) => {
                
             );
 }
-const DetailTypeForm = ({onClose , id}) => {
+const DetailTypeForm = ({onClose , Type , Types}) => {
     // Libelle , order 
     const [Error,setError] = useState(["",""])
     const [Locked,setLocked] = useState(false)
-    const Type = {
-        libelle: "ordinateur",
-        order: 4
-    }
-    const handleSubmit = (e) => {
+    const Navigate = useNavigate()
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -96,7 +120,7 @@ const DetailTypeForm = ({onClose , id}) => {
         const regex2 = /^[0-9]+$/;
         const number = Number(data["Order"])
         const errorLibelle = data["Libelle"] ?regex1.test(data["Libelle"])?data["Libelle"].trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorOrder = data["Order"] && regex2.test(data["Order"])?!data.map(e=>e.order).includes(number)?
+        const errorOrder = data["Order"] && regex2.test(data["Order"])?!Types.filter(e=>e._id != Type._id).map(e=>e.order).includes(number)?
         number <= 0?"not Valid":
         "":
         "Already exists"
@@ -108,7 +132,20 @@ const DetailTypeForm = ({onClose , id}) => {
 
         setError([errorLibelle,errorOrder])
         if(error == ""){
-            onClose();
+            try{
+                await api.put('http://localhost:5500/type',{
+                    id : Type._id,
+                    libelle : data["Libelle"],
+                    order : data["Order"]
+                    
+                })
+                
+                onClose();
+            }catch(err){
+                Navigate('/error')
+            }
+            
+            
         }
     }
             return (
