@@ -22,16 +22,16 @@ function ValidateInput(nom,qualite,societe,capital,patente,RCLieu,RCNum,CNSS,adr
         const regex2 = /^[0-9]+$/;
         const regex3 = /^[a-zA-Z0-9° ]+$/;
 
-        const errorNom = nom?regex1.test(nom)?nom.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorQualite = qualite?regex1.test(qualite)?qualite.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorSociete = societe?regex1.test(societe)?societe.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorCapital = capital && regex2.test(capital)?capital <= 0?"not Allowed":"":"a Number is Required"
-        const errorPatente = patente && regex2.test(patente)?patente <= 0?"not Allowed":"":"a Number is Required"
-        const errorRCLieu = RCLieu ?regex3.test(RCLieu)?RCLieu.trim() == ""?"Required":"":"unallowed caractere spotted":"Required"
-        const errorRCNum = RCNum && regex2.test(RCNum)?RCNum <= 0?"not Allowed":"":"a Number is Required"
-        const errorCNSS = CNSS && regex2.test(CNSS)?CNSS <= 0?"not Allowed":"":"a Number is Required"
-        const errorAdress = adresse?regex3.test(adresse)?adresse.trim() == ""?"Required":"":"unallowed caractere spotted":"Required"
-        const errorRIB = RIB && regex2.test(RIB)?RIB <= 0?"not Allowed":"":"a Number is Required"
+        const errorNom = nom?regex1.test(nom.trim())?nom.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
+        const errorQualite = qualite?regex1.test(qualite.trim())?qualite.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
+        const errorSociete = societe?regex1.test(societe.trim())?societe.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
+        const errorCapital = capital && regex2.test(capital.trim())?capital <= 0?"not Allowed":"":"a Number is Required"
+        const errorPatente = patente && regex2.test(patente.trim())?patente <= 0?"not Allowed":"":"a Number is Required"
+        const errorRCLieu = RCLieu ?regex3.test(RCLieu.trim())?RCLieu.trim() == ""?"Required":"":"unallowed caractere spotted":"Required"
+        const errorRCNum = RCNum && regex2.test(RCNum.trim())?RCNum <= 0?"not Allowed":"":"a Number is Required"
+        const errorCNSS = CNSS && regex2.test(CNSS.trim())?CNSS <= 0?"not Allowed":"":"a Number is Required"
+        const errorAdress = adresse?regex3.test(adresse.trim())?adresse.trim() == ""?"Required":"":"unallowed caractere spotted":"Required"
+        const errorRIB = RIB && regex2.test(RIB.trim())?RIB <= 0?"not Allowed":"":"a Number is Required"
         const error = errorNom + errorQualite + errorSociete + errorCapital + errorPatente + errorRCLieu + errorRCNum + errorCNSS + errorAdress + errorRIB
         setError([errorNom,errorQualite,errorSociete,errorPatente,errorRCLieu,errorRCNum,errorCapital,errorRIB,errorCNSS,errorAdress])
         return error
@@ -78,7 +78,7 @@ const AddFournisseurForm = ({onClose}) => {
     }
             return (
                 
-                    <form onSubmit={handleSubmit} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
+                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
                         <div className="w-full py-4 flex justify-center items-center bg-gray-800 rounded-t-md">
                             <h2 className="text-2xl font-bold font-Montserrat text-white">Ajouter un Fournisseur</h2>
                         </div>
@@ -140,8 +140,8 @@ const AddFournisseurForm = ({onClose}) => {
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[8] ? <CircleAlert size={16}/>: null }{Error[8] ?? " " }</p>
                             </div> 
                             <div className="flex flex-col gap-3   w-1/3">
-                                    <label htmlFor="Adress" className="text-sm font-medium font-Roboto">Adress</label>
-                                    <input type="text" id="Adress" placeholder="Adress" name="Adress"  className={"input-base w-full px-4 py-2 text-xs  " + (Error[9]?"border-red-500":"")}/>
+                                    <label htmlFor="Adress" className="text-sm font-medium font-Roboto">Adresse</label>
+                                    <input type="text" id="Adress" placeholder="Adresse" name="Adress"  className={"input-base w-full px-4 py-2 text-xs  " + (Error[9]?"border-red-500":"")}/>
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[9] ? <CircleAlert size={16}/>: null }{Error[9] ?? " " }</p>
                             </div>
                             
@@ -201,7 +201,7 @@ const DetailFournisseurForm = ({onClose , Fournisseur}) => {
     }
             return (
                 
-                    <form onSubmit={handleSubmit} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
+                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
                         <div className="w-full px-8 py-4 flex justify-between items-center bg-gray-800 rounded-t-md">
                             <h2 className="text-2xl font-bold font-Montserrat text-white">Modifier le Fournisseur</h2>
                             <button type="button" className="text-white hover:scale-105" onClick={()=>setLocked(l=>!l)}>{Locked? <Lock/> : <Unlock/>}</button>
@@ -264,8 +264,8 @@ const DetailFournisseurForm = ({onClose , Fournisseur}) => {
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[8] ? <CircleAlert size={16}/>: null }{Error[8] ?? " " }</p>
                             </div> 
                             <div className="flex flex-col gap-3   w-1/3">
-                                    <label htmlFor="Adress" className="text-sm font-medium font-Roboto">Adress</label>
-                                    <input type="text" defaultValue={Fournisseur.adresse} id="Adress" placeholder="Adress" name="Adress" disabled={Locked} className={"input-base w-full px-4 py-2 text-xs disabled:border-gray-300 " + (Error[9]?"border-red-500":"")}/>
+                                    <label htmlFor="Adress" className="text-sm font-medium font-Roboto">Adresse</label>
+                                    <input type="text" defaultValue={Fournisseur.adresse} id="Adresse" placeholder="Adress" name="Adress" disabled={Locked} className={"input-base w-full px-4 py-2 text-xs disabled:border-gray-300 " + (Error[9]?"border-red-500":"")}/>
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[9] ? <CircleAlert size={16}/>: null }{Error[9] ?? " " }</p>
                             </div>
                             

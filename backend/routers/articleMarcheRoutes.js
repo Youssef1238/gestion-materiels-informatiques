@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getArticleMarches , addArticleMarche ,UpdateArticleMarche, deleteArticleMarche,getArticleByMarche} = require('../controllers/articleMarcheController')
+const {getArticleMarches , addArticleMarche ,UpdateArticleMarche, deleteArticleMarche,getArticleByMarche,getArticleMarche} = require('../controllers/articleMarcheController')
 
 router.route('/')
 .get(getArticleMarches)
@@ -9,7 +9,8 @@ router.route('/')
 .delete(deleteArticleMarche)
 
 
-router.get('/:id',getArticleByMarche)
+router.get('/:id',getArticleMarche)
+router.get('/marche/:id',getArticleByMarche)
 
 
 

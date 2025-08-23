@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getEntiteAdmins , addEntiteAdmin ,UpdateEntiteAdmin, deleteEntiteAdmin,getEntiteAdmin} = require('../controllers/entiteAdminController')
+const {getEntiteAdmins , addEntiteAdmin ,UpdateEntiteAdmin, deleteEntiteAdmin,getEntiteAdmin,searchEntiteAdmin} = require('../controllers/entiteAdminController')
 
 router.route('/')
 .get(getEntiteAdmins)
@@ -10,6 +10,7 @@ router.route('/')
 
 
 router.get('/:id',getEntiteAdmin)
+router.get('/search/:query',searchEntiteAdmin)
 
 
 

@@ -19,6 +19,10 @@ const addEntiteAdmin = async (req,res)=>{
         return res.status(400).send("all fields are required ")
     }
     try{
+        let foundEntiteAdmin = await EntiteAdmin.findOne({libelle_ar: req.body.libelle_ar});
+        if(foundEntiteAdmin) return res.status(409).send("libelle en Arabe existe déjà !")
+        foundEntiteAdmin = await EntiteAdmin.findOne({libelle_fr: req.body.libelle_fr});
+        if(foundEntiteAdmin) return res.status(409).send("libelle en Français existe déjà !") 
         const entiteAdmin = new EntiteAdmin({
             libelle_ar : req.body.libelle_ar,
             libelle_fr : req.body.libelle_fr
@@ -36,7 +40,10 @@ const UpdateEntiteAdmin = async (req,res)=>{
         try{
             const item = await EntiteAdmin.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
-
+            let foundEntiteAdmin = await EntiteAdmin.findOne({libelle_ar: req.body.libelle_ar ,_id : {$ne: req.body.id}});
+            if(foundEntiteAdmin) return res.status(409).send("libelle en Arabe existe déjà !")
+            foundEntiteAdmin = await EntiteAdmin.findOne({libelle_fr: req.body.libelle_fr ,_id : {$ne: req.body.id}});
+            if(foundEntiteAdmin) return res.status(409).send("libelle en Français existe déjà !")
             req.body.libelle_ar && await EntiteAdmin.updateOne({_id : req.body.id},{$set : {libelle_ar : req.body.libelle_ar}});
             req.body.libelle_fr && await EntiteAdmin.updateOne({_id : req.body.id},{$set : {libelle_fr : req.body.libelle_fr}});
             res.send("Updated")
@@ -71,7 +78,28 @@ const getEntiteAdmin = async (req,res)=>{
     }
     
 }
+const searchEntiteAdmin = async (req,res)=>{
+    
+    try {
+        if (!req.params.query) {
+            return res.status(400).send("libelle is required");
+        }
+        const regex = new RegExp(req.params.query, 'i');
+        const EntiteAdmins = await EntiteAdmin.find({ libelle_fr: { $regex: regex } });
+        if (!EntiteAdmins || EntiteAdmins.length === 0) {
+            return res.status(404).send("Aucun Entité Admin trouvé");
+        }
+        
+        const result = EntiteAdmins.map(EntiteAdmin => ({
+            id : EntiteAdmin._id , label : EntiteAdmin.libelle_fr
+        }));
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ title: "Server error", message: err.message });
+    }
+    
+}
 
 
 
-module.exports = {getEntiteAdmins, addEntiteAdmin,UpdateEntiteAdmin,deleteEntiteAdmin,getEntiteAdmin}
+module.exports = {getEntiteAdmins, addEntiteAdmin,UpdateEntiteAdmin,deleteEntiteAdmin,getEntiteAdmin,searchEntiteAdmin}

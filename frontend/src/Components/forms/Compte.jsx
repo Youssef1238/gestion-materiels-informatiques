@@ -32,8 +32,8 @@ const AddCompteForm = ({onClose}) => {
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        const errorPseudo = data["Pseudo"].trim() == ""?"Required":regex1.test(data["Pseudo"])?"":"only Alphanumerics allowed"
-        const erroPass = data["Pass"].trim() == ""?"Required":""
+        const errorPseudo = data["Pseudo"].trim() == ""?"Required":regex1.test(data["Pseudo"].trim())?"":"only Alphanumerics allowed"
+        const erroPass = data["Pass"].trim() != ""?data["Pass"].length < 8?"Must have at least 8 caracters":"":"Required"
 
         const error = errorPseudo + erroPass
 
@@ -44,8 +44,8 @@ const AddCompteForm = ({onClose}) => {
         if(error == ""){
             try {
                 await api.post(`http://localhost:5500/user`,{
-                    pseudo : data["Pseudo"],
-                    password : data["Pass"],
+                    pseudo : data["Pseudo"].trim(),
+                    password : data["Pass"].trim(),
                     admin : isAdmin,
                 })
                 onClose();
@@ -61,7 +61,7 @@ const AddCompteForm = ({onClose}) => {
     }
             return (
                 
-                    <form onSubmit={handleSubmit} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
+                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
                         <div className="w-full py-4 flex justify-center items-center bg-gray-800 rounded-t-md">
                             <h2 className="text-2xl font-bold font-Montserrat text-white">Ajouter un Compte</h2>
                         </div>
@@ -113,7 +113,7 @@ const DetailCompteForm = ({onClose , Compte}) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        const erroPass = data["Pass"].trim() == ""?"Required":""
+        const erroPass = data["Pass"].trim() != ""?data["Pass"].trim().length < 8?"Must have at least 8 caracters":"":"Required"
 
         
 
@@ -123,7 +123,7 @@ const DetailCompteForm = ({onClose , Compte}) => {
             try {
                 await api.put(`http://localhost:5500/user`,{
                     id : Compte._id,
-                    password : data["Pass"],
+                    password : data["Pass"].trim(),
                 })
                 onClose();
             } catch (err) {
@@ -134,7 +134,7 @@ const DetailCompteForm = ({onClose , Compte}) => {
     }
             return (
                 
-                    <form onSubmit={handleSubmit} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
+                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
                         <div className="w-full px-8 py-4 flex justify-between items-center bg-gray-800 rounded-t-md">
                             <h2 className="text-2xl font-bold font-Montserrat text-white">Modifier le compte</h2>
                             <button type="button" className="text-white hover:scale-105" onClick={()=>setLocked(l=>!l)}>{Locked? <Lock/> : <Unlock/>}</button>

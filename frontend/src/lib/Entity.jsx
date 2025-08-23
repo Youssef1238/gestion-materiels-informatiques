@@ -2,12 +2,12 @@ import {BoxIcon, Building2, Handshake,StoreIcon, TagIcon, User2 } from "lucide-r
 
 const getEntityInfo = (isAdmin) => {
     const placeholder = {
-        "Marché": "Entrer la référence de marché",
-        "Entité Admin.": "Entrer le nom de l'entité",
-        "Article": "Entrer le serial nombre de l'article",
-        "Fournisseur": "Entrer le nom du fournisseur",
-        "Type de matériel": "Entrer le type de matériel", 
-        ...(isAdmin && { "Compte": "Entrer le nom de l'utilisateur" })
+        "Marché": "Filtrer selon la référence de marché",
+        "Entité Admin.": "Filtrer selon le nom de l'entité",
+        "Article": "Filtrer selon le serial nombre de l'article",
+        "Fournisseur": "Filtrer selon le nom du fournisseur",
+        "Type de matériel": "Filtrer selon le type de matériel", 
+        ...(isAdmin && { "Compte": "Filtrer selon le nom d'utilisateur" })
     } 
     const icons = {
         "Marché": <StoreIcon size={32} color="#818cf8"/>,
@@ -26,21 +26,32 @@ const getEntityInfo = (isAdmin) => {
         ...(isAdmin && { "Compte":  "user" })
     }
     const searchFunc = {
-        "Marché": (data,query)=> data.filter(e=> !query || e.reference == query),
-        "Entité Admin.": (data,query)=> data.filter(e=>!query || e.libelle_fr == query),
-        "Article": (data,query)=> data.filter(e=>!query || e.Numero_Serie == query),
-        "Fournisseur": (data,query)=> data.filter(e=>!query || e.nom == query),
-        "Type de matériel": (data,query)=> data.filter(e=>!query || e.libelle == query),
-        ...(isAdmin && { "Compte":  (data,query)=> data.filter(e=>!query || e.pseudo == query), })
+        "Marché": (data, query) => data.filter(e => !query || e.reference === query || e.reference.split('/').includes(query)),
+        "Entité Admin.": (data, query) => data.filter(e => !query || e.libelle_fr.toLowerCase().split(' ').includes(query.toLowerCase())),
+        "Article": (data, query) => data.filter(e => !query || e.Numero_Serie.toLowerCase().includes(query.toLowerCase())),
+        "Fournisseur": (data, query) => data.filter(e => !query || e.nom.toLowerCase().split(' ').includes(query.toLowerCase())),
+        "Type de matériel": (data, query) => data.filter(e => !query || e.libelle.toLowerCase().split(' ').includes(query.toLowerCase())),
+        ...(isAdmin && { "Compte": (data, query) => data.filter(e => !query || e.pseudo.toLowerCase().includes(query.toLowerCase())) })
     }
     const ExcelHeaders = {
         "Marché": ["Objet","Reference","Type","Fournisseur","Date de Creation"],
         "Entité Admin.": ["Libelle en Arabe", "Libelle en Français"],
         "Fournisseur": ["Nom","Qualite","Societe","Capital","Patente","RC Lieu","RC Numero","CNSS","Adresse","RIB"],
         "Type de matériel": ["Ordre", "Libelle"], 
+        "Article" : ["Numero","Type","Marque","Description","Quantite","Prix estimatif","Prix unitaire"],
+        "subArticle" : ["Numero","Numero de Serie","Date de Livraison","CAB"],
     } 
+    const entityClasses = {
+        "Marché": { bg : "bg-indigo-600",border: "border-indigo-300" , shadow: "hover:shadow-indigo-300", gradient: "from-indigo-300 to-indigo-600" },
+        "Entité Admin.": { bg : "bg-green-600", border: "border-green-300", shadow: "hover:shadow-green-300",gradient: "from-green-300 to-green-600" },
+        "Article": { bg : "bg-cyan-600", border: "border-cyan-300", shadow: "hover:shadow-cyan-300",gradient: "from-cyan-300 to-cyan-600" },
+        "Fournisseur": { bg : "bg-amber-600", border: "border-amber-300", shadow: "hover:shadow-amber-300",gradient: "from-amber-300 to-amber-600" },
+        "Type de matériel": { bg : "bg-violet-600", border: "border-violet-300", shadow: "hover:shadow-violet-300",gradient: "from-violet-300 to-violet-600" },
+        ...(isAdmin && { "Compte": { bg : "bg-rose-600", border: "border-rose-300", shadow: "hover:shadow-rose-300",gradient: "from-rose-300 to-rose-600" } })
+    };
 
-    return {placeholder, icons , apiRoute , searchFunc , ExcelHeaders}
+
+    return {placeholder, icons , apiRoute , searchFunc , ExcelHeaders, entityClasses}
 }
 
 

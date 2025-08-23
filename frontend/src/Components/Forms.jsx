@@ -1,7 +1,9 @@
+import ArticleForm from "./forms/Article";
 import CompteForm from "./forms/Compte";
 import EntitéAdminForm from "./forms/EntitéAdmin";
 import FournisseurForm from "./forms/Fournisseur";
 import MarchéForm from "./forms/Marché";
+import SubArticleForm from "./forms/SubArticle";
 import TypeForm from "./forms/Type";
 
 export default function Forms({type , data , entity, onClose}) {
@@ -14,7 +16,7 @@ export default function Forms({type , data , entity, onClose}) {
     };
 
    return (
-    <div onClick={handleBackdropClick} className="fixed inset-0 z-30 w-full min-h-screen flex py-12 justify-center bg-black bg-opacity-50">
+    <div onClick={handleBackdropClick} className="fixed inset-0 z-30 w-full min-h-screen flex py-12 justify-center items-center bg-black bg-opacity-50">
         {
             (() => {
                 switch(entity) {
@@ -26,6 +28,10 @@ export default function Forms({type , data , entity, onClose}) {
                         return <FournisseurForm type={type} data={data} onClose={onClose}/>;
                     case 'Marché':
                         return <MarchéForm type={type} data={data} onClose={onClose}/>;
+                    case 'Article':
+                        return <ArticleForm type={type} data={data} onClose={onClose}/>;
+                    case 'subArticle':
+                        return <SubArticleForm type={type} data={data} onClose={onClose}/>;
                     case 'Type de matériel':
                         return <TypeForm type={type} data={data} onClose={onClose}/>;
                     default:

@@ -7,7 +7,9 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { ArrowRight, Circle } from 'lucide-react'
 import getEntityInfo from '@/lib/Entity'
-export default function ExcelHandling({e, Entity  , onClose }){
+import SubmitExcelArticle from '@/lib/Excel/Article'
+import SubmitExcelSubArticle from '@/lib/Excel/subArticle'
+export default function ExcelHandling({e, Entity  , onClose ,Id}){
         const Navigate = useNavigate()
         const [ExcelResult,setExcelResult] = useState([0,0])
         const [Errors,setErrors] = useState({})
@@ -21,6 +23,8 @@ export default function ExcelHandling({e, Entity  , onClose }){
             "Entité Admin.": (row)=>SubmitExcelEntitéAdmin(row,setExcelResult,setErrors),
             "Fournisseur": (row)=>SubmitExcelFournisseur(row,setExcelResult,setErrors),
             "Type de matériel": (row)=>SubmitExcelType(row,setExcelResult,setErrors), 
+            "Article": (row)=>SubmitExcelArticle(row,setExcelResult,setErrors,Id), 
+            "subArticle": (row)=>SubmitExcelSubArticle(row,setExcelResult,setErrors,Id), 
         }
         useEffect(()=>{
             const load = ()=>{
@@ -40,8 +44,6 @@ export default function ExcelHandling({e, Entity  , onClose }){
                         setIsCompatible(false)
                         return
                     }
-
-                    // Remove header row and set entities
                     setEntities(XLSX.utils.sheet_to_json(sheet))
                 }
             }
@@ -50,16 +52,26 @@ export default function ExcelHandling({e, Entity  , onClose }){
         },[])
         useEffect(()=>{
             const handle = async ()=>{
-                Entities?.forEach(async (row)=>{
-                    try {
-                        await handleFunc[Entity](row)
-                        setCurrent(c=>c+1)
+                if(Entities){
+                    for (const row of Entities){
+                        
+                        try {
+                            await handleFunc[Entity](row)
+                        } catch (error) {
+                            if(error.response){
+                                const rowNumber = "L" + row["__rowNum__"]
+                                setErrors(err=>{return {...err , [rowNumber]: [error.response.data]}})
+                                setExcelResult(prv=>[prv[0] , prv[1] + 1])
+                            }else{
+                                console.error(error)
+                                Navigate('/error')
+                            }
                             
-                    } catch (error) {
-                        console.error(error)
-                        Navigate('/error')
+                        }finally{
+                            setCurrent(c=>c+1)
+                        }
                     }
-                })
+                }
                 
             }
             handle()

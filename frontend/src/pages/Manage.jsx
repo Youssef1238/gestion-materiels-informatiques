@@ -30,7 +30,7 @@ export default function Manage() {
     const { AccessToken } = useAuth();
     const decoded = jwtDecode(AccessToken);
     const isAdmin = decoded.isAdmin;
-    const {placeholder, icons , apiRoute , searchFunc} = getEntityInfo(isAdmin)
+    const {placeholder, icons , apiRoute , searchFunc, entityClasses} = getEntityInfo(isAdmin)
     const [Entity, setEntity] = useState("Marché");
     const [data,setData] = useState([])
     const [filteredData,setFilteredData] = useState([])
@@ -64,7 +64,6 @@ export default function Manage() {
                     setError(true)
                     console.log(err)
                 } else {
-                    console.log("here")
                     Navigate('/error')
                 }
             }finally{
@@ -73,6 +72,7 @@ export default function Manage() {
     }
     useEffect(()=>{
         fetchData(Entity)
+        if(!isFormOpen) document.body.style.overflow = '';
     },[changed , Entity , isFormOpen])
 
     const closeForm = async () => {
@@ -102,7 +102,7 @@ export default function Manage() {
         
     }
     const Shortcuts = (e)=>{
-        if(e.key == "r" &&  !["Compte","Entité Admin.","Type de matériel"].includes(Entity))
+        if(e.key == "r" && e.target.tagName !== 'INPUT' &&  !["Compte","Entité Admin.","Type de matériel"].includes(Entity))
             setIsTable(t=>!t);
         
     }
@@ -161,18 +161,19 @@ export default function Manage() {
             <div className="w-full py-8 px-8 flex justify-around items-center" id="manage-header" >
                 <div className="relative w-1/2">
                     <input type="text" name="query" id="query" 
-                    className="text-black text-sm rounded-full w-full outline-dark border-2 border-primary bg-white px-12 py-3"
+                    className={`text-black text-sm w-full rounded-full outline-dark border-2  ${entityClasses[Entity].border} shadow-md bg-white px-12 py-3`}
                     placeholder={Entity ? placeholder[Entity] : "Rechercher..."}
                     ref={QueryInput}
+                    onKeyDown={(e)=>{if(e.key == "Enter") search()}}
                     />
-                    <button onClick={search} className="px-6 absolute top-0 right-0 h-full bg-primary text-gray-50 rounded-full hover:opacity-75"><SearchIcon /></button>
+                    <button onClick={search} className={"px-6 absolute rounded-full top-0 right-0 h-full bg-gradient-to-tr " +entityClasses[Entity].gradient+" text-gray-50  hover:opacity-75"}><SearchIcon /></button>
                     
-                    <div className="rounded-full h-full w-fit absolute top-0 right-20">
+                    <div className=" h-full w-fit absolute top-0 right-20">
                         <Select value={Entity} onValueChange={(value) => changeEntity(value)}>
-                            <SelectTrigger className="w-[240px] text-sm rounded-full h-full border-0 shadow-none">
+                            <SelectTrigger className="w-fit text-sm h-full  border-0 shadow-none">
                                 <SelectValue placeholder="Entité" />
                             </SelectTrigger>
-                            <SelectContent className="w-[240px] p-0 m-0" >
+                            <SelectContent className="w-[200px] p-0 m-0" >
                                 {Object.keys(placeholder).map((key) => (
                                     <SelectItem key={key} className="bg-gray-100 hover:bg-primary cursor-pointer hover:text-white text-sm p-4" value={key}>
                                         {key}
@@ -184,15 +185,15 @@ export default function Manage() {
                 </div>
                 <div className="flex gap-16 items-center justify-center">
                     <button 
-                        className="w-[200px] px-10 py-4 bg-primary text-gray-50 cursor-default  disabled:bg-gray-300 disabled:text-gray-50  rounded-full text-sm relative" disabled={Entity == "Article"}
+                        className={"w-[200px] px-10 py-4 "+entityClasses[Entity].bg+"  text-gray-50 cursor-default  disabled:bg-gray-300 disabled:text-gray-50  rounded-full text-sm relative"} disabled={Entity == "Article"}
                     >
-                        <div disabled={Entity == "Article"} className={"h-full cursor-pointer flex justify-center items-center px-8 absolute top-1/2 left-0 rounded-l-full shadow-primary hover:shadow-md transition-shadow -translate-x-1/2 -translate-y-1/2 " + (Entity == "Article"?"bg-gray-300" : "bg-primary ")}>
+                        <div disabled={Entity == "Article"} className={"h-full cursor-pointer flex justify-center items-center px-8 absolute top-1/2 left-0 rounded-l-full "+entityClasses[Entity].shadow +" hover:shadow-md transition-shadow -translate-x-1/2 -translate-y-1/2 " + (Entity == "Article"?"bg-gray-300" : entityClasses[Entity].bg)}>
                                 {Entity != "Article" && <PlusIcon onClick={()=> {setFormType("add");openForm()}} size={24} /> }
                         </div>
                         {Entity=="Type de matériel"?"Type":Entity}
                         
                         <input disabled={Entity == "Article" || Entity == "Compte"} type="file" accept=".xlsx, .xls" className="hidden " id="excelInput" onChange={setExcelEvent} ref={ExcelInput}/>
-                        <label disabled={Entity == "Article" || Entity == "Compte"} htmlFor="excelInput" className={" h-full flex justify-center items-center px-8 absolute top-1/2 right-0 rounded-r-full shadow-primary  translate-x-1/2 -translate-y-1/2 " + (Entity == "Article"?"bg-gray-300" : "bg-primary ") + (Entity != "Compte"?" cursor-pointer hover:shadow-md transition-shadow":"")}>
+                        <label disabled={Entity == "Article" || Entity == "Compte"} htmlFor="excelInput" className={" h-full flex justify-center items-center px-8 absolute top-1/2 right-0 rounded-r-full shadow-primary  translate-x-1/2 -translate-y-1/2 " + (Entity == "Article"?"bg-gray-300" : entityClasses[Entity].bg) + (Entity != "Compte"?" cursor-pointer hover:shadow-md "+entityClasses[Entity].shadow + " transition-shadow":"")}>
                                
                             {Entity != "Article" && Entity != "Compte" &&  <ExcelIcon/>}
                         </label>
@@ -247,9 +248,10 @@ export default function Manage() {
                     {icons[Entity]}
                     <h2 className="text-2xl font-semibold font-Montserrat">{Entity}</h2>
                 </div>
-                
-                <h2 className="text-2xl font-light font-Montserrat text-nowrap">Page {Page} / {Math.ceil(sortedData.length / 12)}</h2>
-                
+                {
+                    sortedData.length > 0 &&
+                    <h2 className="text-2xl font-light font-Montserrat text-nowrap">Page {Page} / {Math.ceil(sortedData.length / 12)}</h2>
+                }
             </div>
             
                 {   

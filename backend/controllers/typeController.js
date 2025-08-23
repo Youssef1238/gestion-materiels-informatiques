@@ -19,6 +19,10 @@ const addType = async (req,res)=>{
         return res.status(400).send("order and libelle are required")
     }
     try{
+        let foundType = await Type.findOne({libelle: req.body.libelle});
+        if(foundType) return res.status(409).send("Libelle existe déjà !")
+        foundType = await Type.findOne({order: req.body.order});
+        if(foundType) return res.status(409).send("Ordre existe déjà !")
         const type = new Type({
             order : req.body.order,
             libelle : req.body.libelle
@@ -36,6 +40,10 @@ const UpdateType = async (req,res)=>{
         try{
             const item = await Type.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
+            let foundType = await Type.findOne({libelle : req.body.libelle,_id : {$ne: req.body.id} });
+            if(foundType) return res.status(409).send("Libelle existe déjà !")
+            foundType = await Type.findOne({order : req.body.order,_id : {$ne: req.body.id} });
+            if(foundType) return res.status(409).send("Ordre existe déjà !")
             req.body.order && await Type.updateOne({_id : req.body.id},{$set : {order : req.body.order}});
             req.body.libelle && await Type.updateOne({_id : req.body.id},{$set : {libelle : req.body.libelle}});
             res.send("Updated")

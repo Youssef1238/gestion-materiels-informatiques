@@ -1,6 +1,7 @@
 import api from "@/utils/Api";
-import { BoxIcon, FormInput, Handshake, StoreIcon, Trash2 } from "lucide-react"
-import { useNavigate } from "react-router-dom";
+import { ArrowRight, BoxIcon, FormInput, Handshake, StoreIcon, Trash2 } from "lucide-react"
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function Card({ entity, data, setChanged, onDetail }) {
     switch (entity) {
@@ -19,8 +20,12 @@ export default function Card({ entity, data, setChanged, onDetail }) {
 }
 
 const MarchéCard = ({ data }) => {
+    const Navigate = useNavigate()
+    const onDetail = () => {
+        Navigate('/Marché', { state: { marchéId: data._id } });
+    }
     return (
-        <div className={"cursor-pointer py-4 px-6 rounded-md shadow-md flex flex-col items-center gap-6  bg-gray-100 hover:shadow-lg transition-all duration-300 hover:scale-105"}>
+        <div className={"py-4 px-6 rounded-md shadow-md flex flex-col items-center gap-6  bg-gray-100 hover:shadow-lg transition-all duration-300 hover:scale-105"}>
             <div className="w-full px-2 flex items-center justify-between">
                 <h3 className="text-xl font-bold font-Montserrat">Marché {data.reference}</h3>
                 <StoreIcon size={24} color="#818cf8" />
@@ -32,7 +37,7 @@ const MarchéCard = ({ data }) => {
                     </div>
                     <div className="flex  items-center gap-2">
                         <span className="text-gray-600 text-sm font-medium font-Montserrat">Fournisseur: </span>
-                        <span className="text-black text-sm font-semibold font-poppins">{data.fournisseur}</span> 
+                        <span className="text-black text-sm font-semibold font-poppins">{data.fournisseur.nom}</span> 
                     </div>
                     <div className="flex  items-center gap-2">
                         <span className="text-gray-600 text-xs font-medium font-Montserrat">Objet: </span>
@@ -45,12 +50,16 @@ const MarchéCard = ({ data }) => {
                     
                 
             </div>
+            <div className="w-full py-4 flex items-center justify-center gap-2">
+                <button onClick={()=>onDetail()} className="px-6 py-2 shadow-sm border border-indigo-300 flex items-center justify-center gap-2  rounded-md hover:shadow-md transition-shadow">Consulter <ArrowRight/></button>
+            </div> 
         </div>
     )
 }
 
 const FournisseurCard = ({ data, onDetail, setChanged }) => {
     const Navigate = useNavigate()
+    const [isDelete , setIsDelete] = useState(false)
     const sliceAdresse = (add) =>{
         return add.split(" ").slice(0,2).join(' ')
     }
@@ -65,7 +74,7 @@ const FournisseurCard = ({ data, onDetail, setChanged }) => {
         }
     }
     return (
-        <div className={"py-4 px-6 rounded-md shadow-md flex flex-col items-center gap-6  bg-gray-100 hover:shadow-lg transition-all duration-300 hover:scale-105"}>
+        <div className={"relative py-4 px-6 rounded-md shadow-md flex flex-col items-center gap-6  bg-gray-100 hover:shadow-lg transition-all duration-300 hover:scale-105"}>
             <div className="w-full px-2 flex items-center justify-between">
                 <h3 className="text-xl font-bold font-Montserrat">{data.nom}</h3>
                 <Handshake size={24} color="#f59e0b" />
@@ -92,9 +101,20 @@ const FournisseurCard = ({ data, onDetail, setChanged }) => {
             </div>
             <div className="w-full py-4 flex items-center justify-center gap-2">
                 <button onClick={()=>onDetail(data)} className="px-2 py-1 shadow-sm border border-amber-300  rounded-md hover:shadow-md transition-shadow"><FormInput color="#f59e0b"/></button>
-                <button onClick={()=>deleteFournisseur(data._id)} className="px-2 py-1 shadow-sm border border-red-300 rounded-md hover:shadow-md transition-shadow"><Trash2 color="#f87171"/></button>
-                
+                <button onClick={()=>setIsDelete(true)} className="px-2 py-1 shadow-sm border border-red-300 rounded-md hover:shadow-md transition-shadow"><Trash2 color="#f87171"/></button>
             </div>
+            {
+                isDelete?
+                <div className="absolute bg-white left-0 right-0 top-0 bottom-0 flex flex-col justify-around items-center gap-2 p-2 z-10 shadow-lg rounded-md">
+                    <h1 className="font-light bg-white text-sm text-gray-700 text-center">Toutes les données et relations liées à ce fournisseur seront également supprimées ! Êtes-vous sûr de vouloir continuer ?</h1>
+                    <div className="flex gap-2 ">
+                        <button onClick={()=>deleteFournisseur(data._id)} className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Confirmer</button>
+                        <button onClick={()=>setIsDelete(false)} className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition">Annuler</button>
+                    </div>
+                </div>
+                :
+                null
+            }
         </div>
     )
 }

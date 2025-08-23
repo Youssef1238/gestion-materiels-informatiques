@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getMarches , addMarche ,UpdateMarche, deleteMarche,getMarche,getMarchesByFournisseur} = require('../controllers/marcheController')
+const {getMarches , addMarche ,UpdateMarche, deleteMarche,getMarche,getMarchesByFournisseur,searchMarche} = require('../controllers/marcheController')
 
 router.route('/')
 .get(getMarches)
@@ -13,6 +13,7 @@ router.get('/:id',getMarche)
 
 
 router.get('/fournisseur/:id',getMarchesByFournisseur)
+router.get('/search/:query',searchMarche)
 
 
 

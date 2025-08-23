@@ -68,6 +68,12 @@ const addArticleLivre = async (req,res)=>{
         return res.status(400).send("all fields are required ")
     }
     try{
+        const articleMarche = await ArticleMarche.findOne({_id : req.body.article_marche_id})
+        if(!articleMarche) return res.status(404).send("Cet article n'existe pas !")
+        let foundArticle = await ArticleLivre.findOne({article_marche_id : req.body.article_marche_id,Numero : req.body.Numero})
+        if(foundArticle) return res.status(409).send("Numero existe déjà !")
+        foundArticle = await ArticleLivre.findOne({article_marche_id : req.body.article_marche_id,Numero_Serie : req.body.Numero_Serie})
+        if(foundArticle) return res.status(409).send("Numero de Serie existe déjà !")
         const articleLivre = new ArticleLivre({
             article_marche_id : req.body.article_marche_id,
             Numero : req.body.Numero,
@@ -92,6 +98,20 @@ const UpdateArticleLivre = async (req,res)=>{
         if(!item){
             return res.sendStatus(404)
         }
+        if(req.body.article_marche_id){
+            const articleMarche = await ArticleMarche.findOne({_id : req.body.article_marche_id })
+            if(!articleMarche) return res.status(404).send("Cet article n'existe pas !")
+        }
+        if(req.body.Numero){
+            let foundArticle = await ArticleLivre.findOne({article_marche_id : req.body.article_marche_id,Numero : req.body.Numero ,_id : {$ne: req.body.id}})
+            if(foundArticle) return res.status(409).send("Numero existe déjà !")
+        }
+        if(req.body.Numero_Serie){
+            foundArticle = await ArticleLivre.findOne({article_marche_id : req.body.article_marche_id,Numero_Serie : req.body.Numero_Serie ,_id : {$ne: req.body.id}})
+            if(foundArticle) return res.status(409).send("Numero de Serie existe déjà !")
+        }
+        
+
         req.body.article_marche_id && await ArticleLivre.updateOne({_id : req.body.id},{$set : {article_marche_id : req.body.article_marche_id}});
         req.body.Numero && await ArticleLivre.updateOne({_id : req.body.id},{$set : {Numero : req.body.Numero}});
         req.body.Numero_Serie && await ArticleLivre.updateOne({_id : req.body.id},{$set : {Numero_Serie : req.body.Numero_Serie}});
@@ -135,8 +155,8 @@ const deleteByArticleMarche = async(req,res)=>{
 const getArticleByArticleMarche = async (req,res)=>{
     if(!req.params.id) return res.status(400).send("id needed")
     try{
-        const articleLivre = await ArticleLivre.find({article_marche_id : req.params.id})
-        res.json(articleLivre)
+        const articleLivres = await ArticleLivre.find({article_marche_id : req.params.id})
+        res.json(articleLivres)
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
     }

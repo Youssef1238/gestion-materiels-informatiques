@@ -16,7 +16,7 @@ export default function MySelect ({children , width , placeholder , ...props}){
             <SelectTrigger className={width + " text-xs px-4 py-2 border select-text border-primary justify-between disabled:border-gray-300"}
                 ref={(el) => {
                     if (el) {
-                        // Sync content width to trigger width
+                        
                         setContentWidth(`${el.offsetWidth}px`);
                     }
                 }}

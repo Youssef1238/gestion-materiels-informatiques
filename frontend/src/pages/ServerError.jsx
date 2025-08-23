@@ -16,7 +16,7 @@ export default function ServerError() {
             </p>
             <div className='flex gap-4 items-center '>
                 <button
-                onClick={() => Navigate(window.history.back())}
+                onClick={() => Navigate(-1)}
                 className="bg-dark hover:bg-secondary text-white focus:ring-2 focus:ring-secondary focus:ring-offset-2 px-8 py-4 text-2xl"
                 >
                 Retry

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import  {useAuth}  from "../auth/authContext"
-import {House , LayoutDashboard , LogOut,SearchIcon} from 'lucide-react'
+import { House , LayoutDashboard , LogOut,SearchIcon} from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -9,9 +9,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useState } from "react"
+import SearchModal from "./SearchModal"
+import api from "@/utils/Api"
 
 export default function NavBar() {
     const [Entity, setEntity] = useState("Marché");
+    const [searchResult, setSearchResult] = useState([]);
+    const [isResultShown, setIsResultShown] = useState(false);
     const { logout  } = useAuth();
     const placeholder = {
         "Marché": "Entrer la référence de marché",
@@ -19,17 +23,65 @@ export default function NavBar() {
     }
     const Location = window.location.pathname;
     const Navigate = useNavigate()
+
     const Logout = async () => {
         await logout();
         Navigate('/login');
     }
-
-
+    const search = async (query)=>{
+        if(query == "" || query.trim()  == "")
+            setSearchResult([])
+        else{
+            if(Entity == "Marché")
+                await searchMarché(query)
+            else
+                await searchEntitéAdmin(query)
+        }
+        setIsResultShown(true)
+    }
+    const searchMarché = async (ref)=>{
+        try{
+            const res = await api.get(`http://localhost:5500/marche/search/${ref}`)
+            setSearchResult(res.data)
+        }catch(err){
+            if (err.response.status == 404) {
+                setSearchResult([])
+            } else {
+                Navigate('/error')
+                console.log(err)
+            }
+        }
+    }
+    const searchEntitéAdmin = async (lib)=>{
+        try{
+            const res = await api.get(`http://localhost:5500/entiteAdmin/search/${lib}`)
+            setSearchResult(res.data)
+        }catch(err){
+            if (err.response.status == 404) {
+                setSearchResult([])
+            } else {
+                Navigate('/error')
+            }
+        }
+    }
 
     return(
         <nav className="sticky top-0 z-10 bg-gray-100 w-full py-5 px-12 flex justify-between items-center border border-b-gray-300 border-b-2" id="nav">
+            <div className="flex items-center gap-12  justify-between">
+                <Link to={'/'}  className={"nav-link " + (Location == '/'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
+                    <House size={32} />
+                </Link>
+                <Link to={'/Gerer'}  className={"nav-link " + (Location == '/Gerer'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
+                    <LayoutDashboard size={32} />
+                </Link>
+                <Link onClick={()=>Logout()}  className={"nav-link text-gray-600"}>
+                    <LogOut size={32}/>
+                </Link>
+ 
+            </div>
             <div className="w-1/3  relative">
-                    <input type="text" name="query" id="query" 
+                    <input type="text" name="query" id="query" onChange={(e)=>search(e.target.value)} 
+                    onFocus={(e)=>search(e.target.value)} onBlur={() => setIsResultShown(false)}
                     className="text-black text-sm rounded-full w-full outline-dark border-2 border-primary bg-white px-14 py-3"
                     placeholder={Entity ? placeholder[Entity] : "Rechercher..."}
                     />
@@ -45,21 +97,14 @@ export default function NavBar() {
                             </SelectContent>
                         </Select>
                     </div>
-                    
+                    {
+                        isResultShown &&
+                        <SearchModal data={searchResult} Entity={Entity}/>
+                    }
             </div>
-
-            <div className="flex items-center gap-12  justify-between">
-                <Link to={'/'}  className={"nav-link " + (Location == '/'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
-                    <House size={32} />
-                </Link>
-                <Link to={'/Gerer'}  className={"nav-link " + (Location == '/Gerer'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
-                    <LayoutDashboard size={32} />
-                </Link>
-                <Link onClick={()=>Logout()}  className={"nav-link text-gray-600"}>
-                    <LogOut size={32}/>
-                </Link>
- 
-            </div>
+            
+            
+            
             
         </nav>
             

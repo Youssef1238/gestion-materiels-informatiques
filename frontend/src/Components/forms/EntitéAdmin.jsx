@@ -29,8 +29,8 @@ const AddEntitéAdminForm = ({onClose}) => {
         const regex1 = /[^A-Za-z\s]/;
         const regex2 = /^[\u0600-\u06FF\s]+$/;
 
-        const errorLibelleFR = data["libelleFR"]?regex1.test(data["libelleFR"])?"only a-z A-Z are allowed":data["libelleFR"].trim() == ""?"Required":"":"Required"
-        const errorLibelleAR = data["libelleAR"]?!regex2.test(data["libelleAR"])?"only arabic caracters allowed":data["libelleAR"].trim() == ""?"Required":"":"Required"
+        const errorLibelleFR = data["libelleFR"]?regex1.test(data["libelleFR"].trim())?"only a-z A-Z are allowed":data["libelleFR"].trim() == ""?"Required":"":"Required"
+        const errorLibelleAR = data["libelleAR"]?!regex2.test(data["libelleAR"].trim())?"only arabic caracters allowed":data["libelleAR"].trim() == ""?"Required":"":"Required"
         const error = errorLibelleFR + errorLibelleAR
 
         
@@ -46,14 +46,21 @@ const AddEntitéAdminForm = ({onClose}) => {
                 
                 onClose();
             } catch (err) {
-                Navigate('/error')
+                if(err.response){ 
+                    console.log(err.response.data)
+                    const error =  err.response.data.split(" ").includes("Français") ? ["",err.response.data] : [err.response.data,""]
+                    setError(error)
+                }else{
+                    console.log(err)
+                    Navigate('/error')
+                }
             }
            
         }
     }
             return (
                 
-                    <form onSubmit={handleSubmit} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
+                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
                         <div className="w-full py-4 flex justify-center items-center bg-gray-800 rounded-t-md">
                             <h2 className="text-2xl font-bold font-Montserrat text-white">Ajouter une Entité Administrative</h2>
                         </div>
@@ -98,8 +105,8 @@ const DetailEntitéAdminForm = ({onClose , EntiteAdmin}) => {
         const regex1 = /[^A-Za-z\s]/;
         const regex2 = /^[\u0600-\u06FF\s]+$/;
 
-        const errorLibelleFR = data["libelleFR"]?regex1.test(data["libelleFR"])?"only a-z A-Z are allowed":data["libelleFR"].trim() == ""?"Required":"":"Required"
-        const errorLibelleAR = data["libelleAR"]?!regex2.test(data["libelleAR"])?"only arabic caracters allowed":data["libelleAR"].trim() == ""?"Required":"":"Required"
+        const errorLibelleFR = data["libelleFR"]?regex1.test(data["libelleFR"].trim())?"only a-z A-Z are allowed":data["libelleFR"].trim() == ""?"Required":"":"Required"
+        const errorLibelleAR = data["libelleAR"]?!regex2.test(data["libelleAR"].trim())?"only arabic caracters allowed":data["libelleAR"].trim() == ""?"Required":"":"Required"
         const error = errorLibelleFR + errorLibelleAR
 
         
@@ -116,13 +123,20 @@ const DetailEntitéAdminForm = ({onClose , EntiteAdmin}) => {
                 
                 onClose();
             } catch (err) {
-                Navigate('/error')
+                if(err.response){ 
+                    console.log(err.response.data)
+                    const error =  err.response.data.split(" ").includes("Français") ? ["",err.response.data] : [err.response.data,""]
+                    setError(error)
+                }else{
+                    console.log(err)
+                    Navigate('/error')
+                }
             }
         }
     }
             return (
                 
-                    <form onSubmit={handleSubmit} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
+                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
                         <div className="w-full px-8 py-4 flex justify-between items-center bg-gray-800 rounded-t-md">
                             <h2 className="text-2xl font-bold font-Montserrat text-white">Modifier une Entité Administrative</h2>
                             <button type="button" className="text-white hover:scale-105" onClick={()=>setLocked(l=>!l)}>{Locked? <Lock/> : <Unlock/>}</button>

@@ -2,6 +2,7 @@
 require('../config/DBconnect')
 const ArticleMarche = require('../models/articleMarcheSchema')
 const ArticleLivre = require('../models/articleLivreSchema')
+const Type = require('../models/typeArticleSchema')
 
 const getArticleMarches = async (req,res)=>{
     try{
@@ -21,6 +22,10 @@ const addArticleMarche = async (req,res)=>{
         return res.status(400).send("all fields are required ")
     }
     try{
+        const foundArticle = await ArticleMarche.findOne({marche_id : req.body.marche_id,Numero : req.body.Numero})
+        if(foundArticle) return res.status(409).send("Numero existe déjà !")
+        const type = await Type.findOne({_id : req.body.type_id})
+        if(!type) return res.status(404).send("Ce type n'existe pas !")
         const articleMarche = new ArticleMarche({
             marche_id : req.body.marche_id,
             Numero : req.body.Numero,
@@ -46,7 +51,14 @@ const UpdateArticleMarche = async (req,res)=>{
 
             const item = await ArticleMarche.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
-
+            const foundArticle = await ArticleMarche.findOne({marche_id : req.body.marche_id ,Numero : req.body.Numero ,_id : {$ne: req.body.id}})
+            console.log()
+            if(foundArticle) return res.status(409).send("Numero existe déjà !")
+            if(req.body.type_id){
+                const type = await Type.findOne({_id : req.body.type_id})
+                if(!type) return res.status(404).send("Ce type n'existe pas !")
+            }
+            
             req.body.marche_id && await ArticleMarche.updateOne({_id : req.body.id},{$set : {marche_id : req.body.marche_id}});
             req.body.Numero && await ArticleMarche.updateOne({_id : req.body.id},{$set : {Numero : req.body.Numero}});
             req.body.type_id && await ArticleMarche.updateOne({_id : req.body.id},{$set : {type_id : req.body.type_id}});
@@ -77,11 +89,29 @@ const deleteArticleMarche = async(req,res)=>{
     
 }
 
+const getArticleMarche = async (req,res)=>{
+    if(!req.params.id) return res.status(400).send("id needed")
+    try{
+        const articleMarche = await ArticleMarche.findOne({_id : req.params.id})
+        if(!articleMarche) return res.status(404).send("Article non trouvé")
+        
+        const type = await Type.findOne({_id : articleMarche.type_id})
+        if(!type) return res.status(404).send("Type non trouvé")
+        res.send({...articleMarche._doc , type : type.libelle})
+    }catch(err){
+        res.status(500).json({title : "Server error",message : err.message})
+    }
+    
+}
 const getArticleByMarche = async (req,res)=>{
     if(!req.params.id) return res.status(400).send("id needed")
     try{
-        const articleMarche = await ArticleMarche.find({marche_id : req.params.id})
-        res.json(articleMarche)
+        const articleMarches = await ArticleMarche.find({marche_id : req.params.id})
+        if(!articleMarches) return res.status(404).send("Article non trouvé")
+        const types = await Type.find()
+        res.json(articleMarches.map((i,_)=> {
+            return {...i._doc , type : (types.find(e=>e._id == i.type_id)?.libelle || "")}
+         }))
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
     }
@@ -90,4 +120,4 @@ const getArticleByMarche = async (req,res)=>{
 
 
 
-module.exports = {getArticleMarches, addArticleMarche,UpdateArticleMarche,deleteArticleMarche,getArticleByMarche}
+module.exports = {getArticleMarches, addArticleMarche,UpdateArticleMarche,deleteArticleMarche,getArticleByMarche,getArticleMarche}

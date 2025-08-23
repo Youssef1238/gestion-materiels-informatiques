@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 export default function Pagination ({page , pages , setPage}){
-
+    if(pages <= 1) return null; 
 
 
     return (

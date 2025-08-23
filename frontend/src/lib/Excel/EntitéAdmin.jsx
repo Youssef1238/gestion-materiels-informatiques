@@ -26,7 +26,8 @@ export default async function SubmitExcelEntitéAdmin(row ,setExcelResult,setErr
         setExcelResult(prv=>[prv[0] + 1 , prv[1]])
     }else{
         const rowNumber = "L" + row["__rowNum__"]
-        setErrors(err=>{return {...err , [rowNumber]: error}})
+        const filtredErr = error.filter(e=>e!="")
+        setErrors(err=>{return {...err , [rowNumber]: filtredErr}})
         setExcelResult(prv=>[prv[0] , prv[1] + 1])
     }
 
