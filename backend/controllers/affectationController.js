@@ -71,13 +71,22 @@ const getAffectationByArticle = async (req,res)=>{
     }
     
 }
+
 const handelRecuperation = async (req,res)=>{
-    if(!req.body.id || !req.body.date_recuperation) return res.status(400).send("id required")
-    try{
-        await Affectation.updateOne({$and : [{article_livre_id : req.body.id},{date_recuperation : {$exists : false}}]},{$set : {date_recuperation : req.body.date_recuperation}});
-        res.send("Recuperee")
-    }catch(err){
-        res.status(500).json({title : "Server error",message : err.message})
+    if (!req.body.id || !req.body.date_recuperation) {
+        return res.status(400).send("Both id and date_recuperation are required");
+    }
+    try {
+        const result = await Affectation.updateOne(
+            { article_livre_id: req.body.id, date_recuperation: { $exists: false } },
+            { $set: { date_recuperation: req.body.date_recuperation } }
+        );
+        if (result.matchedCount === 0) {
+            return res.status(404).send("Affectation not found or already recovered");
+        }
+        res.send("Recuperation updated successfully");
+    } catch (err) {
+        res.status(500).json({ title: "Server error", message: err.message });
     }
     
 }

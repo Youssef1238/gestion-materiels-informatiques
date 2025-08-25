@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import Manage from './pages/Manage.jsx'
 import Marché from './pages/Marché.jsx'
+import EntitéAdmin from './pages/EntiteAdmin.jsx'
 
 ChartJS.register(...registerables);
 
@@ -52,6 +53,13 @@ const router = createBrowserRouter(
       element :
       <ProtectedRoute>
         <Marché/>
+      </ProtectedRoute>  
+    },
+    {
+      path : "/EntitéAdmin",
+      element :
+      <ProtectedRoute>
+        <EntitéAdmin/>
       </ProtectedRoute>  
     },
 

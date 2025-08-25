@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom"
 export default function SearchModal({data ,Entity}) {
     const Navigate = useNavigate()
     const Load = (id)=>{
-        Navigate('/Marché', { state: { marchéId: id } });
+        if(Entity == "Marché")
+            Navigate('/Marché', { state: { marchéId: id } });
+        else
+            Navigate('/EntitéAdmin', { state: { entitéAdminId: id } });
     }
     const hoverClasses = {
         "Marché": "hover:bg-indigo-200  hover:border-indigo-500",

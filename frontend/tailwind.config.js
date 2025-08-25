@@ -21,6 +21,10 @@ export default {
   			Roboto: [
   				'Roboto',
   				'sans-serif'
+  			],
+  			Amiri: [
+  				'Amiri',
+				'serif'
   			]
   		},
   		colors: {

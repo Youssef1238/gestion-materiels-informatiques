@@ -253,26 +253,34 @@ const EntiteAdminTable = ({ data, setChanged, onDetail }) => {
             Navigate('/error')
         }
     }
+    const onAffecte = (id)=>{
+        Navigate('/EntitéAdmin', { state: { entitéAdminId: id } });
+    }
     return (
         <table className="w-full my-12">
             <thead>
                 <tr className="bg-green-500">
                     <th className="px-4 py-2 text-left text-sm"></th>
-                    <th className="px-4 py-2 text-left text-sm">Libelle en Arabe</th>
                     <th className="px-4 py-2 text-left text-sm">Libelle en Français</th>
+                    <th className="px-4 py-2 text-left text-sm">Libelle en Arabe</th>
                     <th className="px-4 py-2 text-left text-sm"></th>
                 </tr>
             </thead>
             <tbody>
                 {
                     data.map((e, index) => (
-                        <tr key={index} className="relative hover:bg-green-100 transition-colors odd:bg-white even:bg-gray-50 shadow-md rounded-md my-2">
-                            <td className="px-4 py-2"><Building2 size={24} color="#22c55e"/></td>
+                        <tr key={index} className="relative group hover:bg-green-100 transition-colors odd:bg-white even:bg-gray-50 shadow-md rounded-md my-2">
+                            <td className="px-4 py-2 group-hover:z-10 group-hover:relative"><Building2 size={24} color="#22c55e"/></td>
+                            <td className="px-4 py-2 text-xs group-hover:z-10 group-hover:relative">{e.libelle_fr}</td>
                             <td className="px-4 py-2 text-xs">{e.libelle_ar}</td>
-                            <td className="px-4 py-2 text-xs">{e.libelle_fr}</td>
                             <td className="px-4 py-2 flex gap-2">
                                 <button onClick={()=>onDetail(e)} className="p-2 shadow-sm border border-green-400  rounded-md hover:shadow-md transition-shadow"><FormInput color="#22c55e" size={20}/></button>
                                 <button onClick={()=>setIsDelete(index)} className="p-2 shadow-sm border border-red-300 rounded-md hover:shadow-md transition-shadow"><Trash2 color="#f87171" size={20}/></button>
+                            </td>
+                            <td className="w-1">
+                                <div className="absolute inset-0 z-0 bg-gray-200 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button onClick={()=>onAffecte(e._id)} className="px-6 py-2 shadow-none flex items-center justify-center gap-2 text-xs text-black hover:text-green-500 transition-colors">Consulter <ArrowRight/></button>
+                                </div>
                             </td>
                             {
                                 isDelete == index?

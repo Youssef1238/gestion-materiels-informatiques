@@ -188,25 +188,48 @@ const getArticleLivre = async (req,res)=>{
 const getArticleByEntite = async (req,res)=>{
     if(!req.params.id) return res.status(400).send("id required")
         try{
-            const affectations = await Affectation.find({$and : [{entiteAdmin_id : req.params.id},{date_recuperation : {$exists : false}}]})
-            if(affectations.length == 0) return res.send([])
-            const articleLivres = await ArticleLivre.find({_id : {$in : affectations.map((e)=>e.article_livre_id)}})
-            const articleMarches = await ArticleMarche.find({_id : {$in : articleLivres.map(e=>e.article_marche_id)}})
-            let articleLivres_V = await Promise.all(articleLivres.map(async (e)=>{
-                const paraInfo = await findParaInfo(e.article_marche_id)
-                const ar = articleMarches.filter(el=> e.article_marche_id == el._id)[0]
-                const aff = affectations.filter(el=> e._id == el.article_livre_id)[0]
-                return{
+
+            const affectations = await Affectation.find({
+                entiteAdmin_id: req.params.id,
+                date_recuperation: { $exists: false }
+            });
+
+            if (!affectations.length) {
+                return res.json([]);
+            }
+
+            const articleLivreIds = affectations.map(a => a.article_livre_id);
+            const articleLivres = await ArticleLivre.find({ _id: { $in: articleLivreIds } });
+
+            const articleMarcheIds = articleLivres.map(al => al.article_marche_id);
+            const articleMarches = await ArticleMarche.find({ _id: { $in: articleMarcheIds } });
+
+            const articleMarcheMap = new Map(articleMarches.map(am => [String(am._id), am]));
+            const affectationMap = new Map(affectations.map(a => [String(a.article_livre_id), a]));
+
+            const types = await Type.find({ _id: { $in: articleMarches.map(am => am.type_id) } });
+            const typeMap = new Map(types.map(t => [String(t._id), t.libelle]));
+
+            const articleLivres_V = await Promise.all(articleLivres.map(async (e) => {
+                const ar = articleMarcheMap.get(String(e.article_marche_id));
+                const aff = affectationMap.get(String(e._id));
+                let paraInfo = {};
+                try {
+                    paraInfo = await findParaInfo(e.article_marche_id);
+                } catch { paraInfo = {}; }
+                return {
                     ...e._doc,
                     paraInfo,
-                    numAR : ar.Numero,
-                    type_id : ar.type_id,
-                    marque : ar.marque,
-                    prix_unitaire : ar.prix_unitaire,
-                    date_affectation : aff.date_affectation
-                }
-            }))
-            res.json(articleLivres_V)
+                    numAR: ar?.Numero,
+                    type: typeMap.get(String(ar?.type_id)),
+                    marque: ar?.marque,
+                    prix_unitaire: ar?.prix_unitaire || 0,
+                    date_affectation: aff?.date_affectation
+                };
+            }));
+
+
+            res.json(articleLivres_V);
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -270,24 +293,70 @@ const getArticleBySerie = async (req,res)=>{
 }
 
 const getItems = async (req,res)=>{
-    if(!req.body.itemsId) return res.send("ids are required")
-        try{
-            const articleLivres = await ArticleLivre.find({_id : {$in : req.body.itemsId}})
-            if(articleLivres.length == 0) return res.send([])
-            const articleMarches = await ArticleMarche.find({_id : {$in : articleLivres.map(e=>e.article_marche_id)}})
-            const types = await Type.find()
-            res.json(articleLivres.map((e)=>{
-                    const articleM = articleMarches.filter(el=>el._id == e.article_marche_id)[0]
-                    return {
-                        design : types.filter(el=>el._id == articleM.type_id)[0]?.libelle + " (n°" + e.Numero + ") ",
-                        marque : articleM.marque,
-                        serie : e.Numero_Serie
-                    }
-            }))
-        }catch(err){
-            res.status(500).json({title : "Server error",message : err.message})
-        }
+    if (!Array.isArray(req.body.itemsId) || req.body.itemsId.length === 0) {
+        return res.status(400).send("ids are required");
+    }
+    try {
+        const articleLivres = await ArticleLivre.find({ _id: { $in: req.body.itemsId } });
+        console.log(articleLivres)
+        if (!articleLivres.length) return res.json([]);
+        const articleMarcheIds = articleLivres.map(e => e.article_marche_id);
+        const articleMarches = await ArticleMarche.find({ _id: { $in: articleMarcheIds } });
+        const types = await Type.find({ _id: { $in: articleMarches.map(am => am.type_id) } });
+
+        const articleMarcheMap = new Map(articleMarches.map(am => [String(am._id), am]));
+        const typeMap = new Map(types.map(t => [String(t._id), t.libelle]));
+
+        const result = articleLivres.map(e => {
+            const articleM = articleMarcheMap.get(String(e.article_marche_id));
+            return {
+                design: articleM ? `${typeMap.get(String(articleM.type_id)) || ''} (n°${e.Numero})` : '',
+                marque: articleM?.marque || '',
+                serie: e.Numero_Serie
+            };
+        });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ title: "Server error", message: err.message });
+    }
     
 }
 
-module.exports = {getArticleLivres, addArticleLivre,UpdateArticleLivre,deleteArticleLivre,getArticleByArticleMarche,getArticleLivre,getArticleByEntite,getArticlebyMarche,getArticleBySerie,deleteByArticleMarche , getItems}
+const searchArticleLivre = async (req,res)=>{
+    try {
+        if (!req.params.query) {
+            return res.status(400).send("Serial number is required");
+        }
+        const regex = new RegExp(req.params.query, 'i');
+        const articlesLivres = await ArticleLivre.find({ Numero_Serie: { $regex: regex } });
+        if (!articlesLivres || articlesLivres.length === 0) {
+            return res.status(404).send("Aucun Article trouvé");
+        }
+        const articleMarcheIds = articlesLivres.map(al => al.article_marche_id);
+        const articleMarches = await ArticleMarche.find({ _id: { $in: articleMarcheIds } });
+        const articleMarcheMap = new Map(articleMarches.map(am => [String(am._id), am]));
+        const types = await Type.find({ _id: { $in: articleMarches.map(am => am.type_id) } });
+        const typeMap = new Map(types.map(t => [String(t._id), t.libelle])); 
+        const articleLivres_V = await Promise.all(articlesLivres.map(async (e) => {
+            const ar = articleMarcheMap.get(String(e.article_marche_id));
+            let paraInfo = {};
+            try {
+                paraInfo = await findParaInfo(e.article_marche_id);
+            } catch { paraInfo = {}; }
+            return {
+                ...e._doc,
+                paraInfo,
+                numAR: ar?.Numero,
+                type: typeMap.get(String(ar?.type_id)),
+                marque: ar?.marque,
+                prix_unitaire: ar?.prix_unitaire || 0,
+            };
+        }));
+        res.json(articleLivres_V)
+    } catch (err) {
+        res.status(500).json({ title: "Server error", message: err.message });
+    }
+    
+}
+
+module.exports = {getArticleLivres, addArticleLivre,UpdateArticleLivre,deleteArticleLivre,getArticleByArticleMarche,getArticleLivre,getArticleByEntite,getArticlebyMarche,getArticleBySerie,deleteByArticleMarche , getItems,searchArticleLivre}

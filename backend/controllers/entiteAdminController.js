@@ -3,6 +3,8 @@ require('../config/DBconnect')
 const EntiteAdmin = require('../models/entiteAdminSchema')
 const Affectation = require('../models/affectationSchema')
 const entieLog = require('../models/entiteLogSchema')
+const ArticleLivre = require('../models/articleLivreSchema')
+const ArticleMarche = require('../models/articleMarcheSchema')
 
 const getEntiteAdmins = async (req,res)=>{
     try{
@@ -100,6 +102,112 @@ const searchEntiteAdmin = async (req,res)=>{
     
 }
 
+const getEntiteAdminStats = async (req,res)=>{
+    
+    if(!req.params.id) return res.status(400).send("id required")
+        try{
+            const totalAffectations = await Affectation.countDocuments({ entiteAdmin_id: req.params.id });
+
+            const affectations = await Affectation.find({
+                entiteAdmin_id: req.params.id,
+                date_recuperation: { $exists: false }
+            });
+
+            if (!affectations.length) {
+                return res.json({ Total: totalAffectations, Current: 0, Value: 0 , monthStats: {}});
+            }
+
+            const articleLivreIds = affectations.map(a => a.article_livre_id);
+            const articleLivres = await ArticleLivre.find({ _id: { $in: articleLivreIds } });
+
+            const articleMarcheIds = articleLivres.map(al => al.article_marche_id);
+            const articleMarches = await ArticleMarche.find({ _id: { $in: articleMarcheIds } });
+
+            const articleMarcheMap = new Map(articleMarches.map(am => [String(am._id), am]));
+
+            const articleLivres_V = articleLivres.map( (e) => {
+                const ar = articleMarcheMap.get(String(e.article_marche_id));
+                return {
+                    ...e._doc,
+                    prix_unitaire: ar?.prix_unitaire || 0,
+                };
+            })
+
+            const Value = articleLivres_V.reduce((sum, item) => sum + (item.prix_unitaire || 0), 0);
+            const monthsStats = await Affectation.aggregate([
+                {
+                    $match: {
+                        entiteAdmin_id: req.params.id
+                    }
+                },
+                {
+                    $facet: {
+                        affectations: [
+                            { $match: { date_affectation: { $exists: true } } },
+                            {
+                                $group: {
+                                    _id: { $dateToString: { format: "%Y-%m", date: "$date_affectation" } },
+                                    totalAffectations: { $sum: 1 }
+                                }
+                            }
+                        ],
+                        recuperations: [
+                            { $match: { date_recuperation: { $exists: true } } },
+                            {
+                                $group: {
+                                    _id: { $dateToString: { format: "%Y-%m", date: "$date_recuperation" } },
+                                    totalRecuperations: { $sum: 1 }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]);
+
+            const affectationsByMonth = monthsStats[0]?.affectations || [];
+            const recuperationsByMonth = monthsStats[0]?.recuperations || [];
+            const allMonths = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            function buildMonthMap(data, valueKey) {
+                const map = {};
+                data.forEach(item => {
+                    const [year, month] = item._id.split('-');
+                    if (!map[year]) map[year] = {};
+                    map[year][parseInt(month, 10) - 1] = item[valueKey];
+                });
+                return map;
+            }
+
+            const affectationsMap = buildMonthMap(affectationsByMonth, 'totalAffectations');
+            const recuperationsMap = buildMonthMap(recuperationsByMonth, 'totalRecuperations');
+
+            const years = Array.from(new Set([
+                ...Object.keys(affectationsMap),
+                ...Object.keys(recuperationsMap)
+            ]));
+
+            const monthStats = {};
+            years.forEach(year => {
+                monthStats[year] = {
+                    affectations: allMonths.map((_, idx) => affectationsMap[year]?.[idx] || 0),
+                    recuperations: allMonths.map((_, idx) => recuperationsMap[year]?.[idx] || 0)
+                };
+            });
+            res.json(
+                {
+                    Total: totalAffectations,
+                    Current: affectations.length,
+                    Value,
+                    monthStats
+                });
+        }catch(err){
+            res.status(500).json({title : "Server error",message : err.message})
+        }
+    
+}
 
 
-module.exports = {getEntiteAdmins, addEntiteAdmin,UpdateEntiteAdmin,deleteEntiteAdmin,getEntiteAdmin,searchEntiteAdmin}
+module.exports = {getEntiteAdmins, addEntiteAdmin,UpdateEntiteAdmin,deleteEntiteAdmin,getEntiteAdmin,searchEntiteAdmin,getEntiteAdminStats}
