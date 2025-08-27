@@ -1,4 +1,5 @@
 import axios from 'axios'
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 let AccessToken = null;
 
@@ -7,7 +8,7 @@ export const setAccessToken = (token) => {
 }
 
 const api = axios.create({
-  baseURL: 'http://localhost:5500',
+  baseURL: BASE_URL,
   withCredentials: true,
 
 })

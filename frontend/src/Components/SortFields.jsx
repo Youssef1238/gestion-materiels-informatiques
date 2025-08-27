@@ -10,7 +10,7 @@ export default function Sortfields({ entity , sortData , sortCol }) {
     return (
         <Select value={sortCol} onValueChange={(val)=>sortData(val)}>
                 <SelectTrigger className="w-fit px-4 py-2 text-sm h-full border-0 shadow-sm">
-                    <SelectValue placeholder="Sort By" />
+                    <SelectValue placeholder="Trier par" />
                 </SelectTrigger>
                 {
                     (()=>{

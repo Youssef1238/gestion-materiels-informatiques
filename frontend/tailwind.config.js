@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
-    content: ["./src/pages/*.{html,js,jsx}","./src/Components/*.{html,js,jsx}","./src/Components/layout/*.{html,js,jsx}",
+    content: ["./src/pages/*.{html,js,jsx}","./src/Components/*.{html,js,jsx}","./src/Components/layout/*.{html,js,jsx}"
 		,"./src/Components/forms/*.{html,js,jsx}","./src/assets/*.{html,js,jsx}" , "./src/auth/*.jsx" , "./src/lib/*.jsx"],
   theme: {
   	extend: {
@@ -74,7 +74,7 @@ export default {
   			}
   		},
   		textColor: {
-  			primary: '#273F3D',
+  			primary:  '#7fd0c7',
   			secondary: '#6E9693'
   		},
   		borderRadius: {

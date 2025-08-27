@@ -16,18 +16,18 @@ export default function ServerError() {
             </p>
             <div className='flex gap-4 items-center '>
                 <button
-                onClick={() => Navigate(-1)}
+                onClick={() => Navigate('/')}
                 className="bg-dark hover:bg-secondary text-white focus:ring-2 focus:ring-secondary focus:ring-offset-2 px-8 py-4 text-2xl"
                 >
-                Retry
+                Acceuil
                 </button>
                 <button
-                onClick={() => Navigate('/')}
+                onClick={() => Navigate('/Gerer')}
                 className="hover:bg-primary hover:text-white text-2xl text-secondary px-8 py-4 border border-dark focus:ring-2 focus:ring-secondary focus:ring-offset-2"
                 >
-                Home
-                </button> 
-        </div>
+                Gérer
+                </button>
+            </div>
         </div>
     
     )

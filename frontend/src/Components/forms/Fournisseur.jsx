@@ -1,7 +1,8 @@
 import api from "@/utils/Api";
-import { CircleAlert, Lock, RotateCcw, Unlock, UploadIcon } from "lucide-react";
+import { CircleAlert } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FormLayout from "../layout/FormLayout";
 
 export default function FournisseurForm({ type, onClose, data }) {
 
@@ -22,18 +23,18 @@ function ValidateInput(nom,qualite,societe,capital,patente,RCLieu,RCNum,CNSS,adr
         const regex2 = /^[0-9]+$/;
         const regex3 = /^[a-zA-Z0-9° ]+$/;
 
-        const errorNom = nom?regex1.test(nom.trim())?nom.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorQualite = qualite?regex1.test(qualite.trim())?qualite.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorSociete = societe?regex1.test(societe.trim())?societe.trim() == ""?"Required":"":"only a-z A-Z are allowed":"Required"
-        const errorCapital = capital && regex2.test(capital.trim())?capital <= 0?"not Allowed":"":"a Number is Required"
-        const errorPatente = patente && regex2.test(patente.trim())?patente <= 0?"not Allowed":"":"a Number is Required"
-        const errorRCLieu = RCLieu ?regex3.test(RCLieu.trim())?RCLieu.trim() == ""?"Required":"":"unallowed caractere spotted":"Required"
-        const errorRCNum = RCNum && regex2.test(RCNum.trim())?RCNum <= 0?"not Allowed":"":"a Number is Required"
-        const errorCNSS = CNSS && regex2.test(CNSS.trim())?CNSS <= 0?"not Allowed":"":"a Number is Required"
-        const errorAdress = adresse?regex3.test(adresse.trim())?adresse.trim() == ""?"Required":"":"unallowed caractere spotted":"Required"
-        const errorRIB = RIB && regex2.test(RIB.trim())?RIB <= 0?"not Allowed":"":"a Number is Required"
-        const error = errorNom + errorQualite + errorSociete + errorCapital + errorPatente + errorRCLieu + errorRCNum + errorCNSS + errorAdress + errorRIB
-        setError([errorNom,errorQualite,errorSociete,errorPatente,errorRCLieu,errorRCNum,errorCapital,errorRIB,errorCNSS,errorAdress])
+        const errorNom = nom?regex1.test(nom)?nom.trim() == ""?"Nom est Obligatoire":"":"juste a-z A-Z sont accepté pour Nom":"Nom est Obligatoire"
+        const errorQualite = qualite?regex1.test(qualite)?qualite.trim() == ""?"Qualité est Obligatoire":"":"juste a-z A-Z sont accepté pour Qualité":"Qualité est Obligatoire"
+        const errorSociete = societe?regex1.test(societe)?societe.trim() == ""?"Société est Obligatoire":"":"juste a-z A-Z sont accepté pour Société":"Société est Obligatoire"
+        const errorCapital = capital && regex2.test(capital)?capital <= 0?"Format Incorrecte de Capital":"":"Capital (Nombre) est Obligatoire"
+        const errorPatente = patente && regex2.test(patente)?patente <= 0?"Format Incorrecte de Patente":"":"Patente (Nombre) est Obligatoire"
+        const errorRCLieu = RCLieu ?regex3.test(RCLieu)?RCLieu.trim() == ""?"RCLieu est Obligatoire":"":"Format Incorrecte de RCLieu":"RCLieu est Obligatoire"
+        const errorRCNum = RCNum && regex2.test(RCNum)?RCNum <= 0?"Format Incorrecte de RCNum":"":"Capital (Nombre) est RCNum"
+        const errorCNSS = CNSS && regex2.test(CNSS)?CNSS <= 0?"Format Incorrecte de CNSS":"":"CNSS (Nombre) est Obligatoire"
+        const errorAdresse = adresse?regex3.test(adresse)?adresse.trim() == ""?"Adresse est Obligatoire":"":"Format Incorrecte de Adresse":"Adresse est Obligatoire"
+        const errorRIB = RIB && regex2.test(RIB)?RIB <= 0?"Format Incorrecte de RIB":"":"RIB (Nombre) est Obligatoire"
+        const error = errorNom + errorQualite + errorSociete + errorCapital + errorPatente + errorRCLieu + errorRCNum + errorCNSS + errorAdresse + errorRIB
+        setError([errorNom,errorQualite,errorSociete,errorPatente,errorRCLieu,errorRCNum,errorCapital,errorRIB,errorCNSS,errorAdresse])
         return error
         
 }
@@ -56,7 +57,7 @@ const AddFournisseurForm = ({onClose}) => {
 
         if(error == ""){
             try {
-                await api.post('http://localhost:5500/fournisseur',{
+                await api.post('fournisseur',{
                     nom : data["Nom"].trim(),
                     qualite : data["Qualité"].trim(),
                     nom_societe : data["Société"].trim(),
@@ -77,12 +78,9 @@ const AddFournisseurForm = ({onClose}) => {
         }
     }
             return (
-                
-                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
-                        <div className="w-full py-4 flex justify-center items-center bg-gray-800 rounded-t-md">
-                            <h2 className="text-2xl font-bold font-Montserrat text-white">Ajouter un Fournisseur</h2>
-                        </div>
-
+                    <FormLayout onClose={onClose} onSubmit={handleSubmit} onReset={()=>setError([])}
+                    Title={"Ajouter un Fournisseur"}  Type={"add"} >
+                    
                         <div className="w-full px-8 flex gap-2 justify-start items-center">
                             <div className="flex flex-col gap-3  w-full">
                                     <label htmlFor="Nom" className="text-sm font-medium font-Roboto">Nom</label>
@@ -147,16 +145,7 @@ const AddFournisseurForm = ({onClose}) => {
                             
                         </div>
                         
-                        <div className="w-full py-8 gap-8 flex justify-start items-center px-8 mt-8">
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="submit" className="w-full bg-primary text-white flex justify-center hover:scale-105 transition-all active:bg-black" ><UploadIcon/></button>
-                            </div>
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="reset" className="w-full border border-primary text-primary flex justify-center hover:scale-105 transition-all active:bg-primary" ><RotateCcw/></button>
-                            </div>
-                        </div>
-
-                    </form>
+                    </FormLayout>
                
             );
 }
@@ -178,7 +167,7 @@ const DetailFournisseurForm = ({onClose , Fournisseur}) => {
 
         if(error == ""){
             try {
-                await api.put('http://localhost:5500/fournisseur',{
+                await api.put('fournisseur',{
                     id : Fournisseur._id,
                     nom : data["Nom"].trim(),
                     qualite : data["Qualité"].trim(),
@@ -200,12 +189,9 @@ const DetailFournisseurForm = ({onClose , Fournisseur}) => {
         }
     }
             return (
-                
-                    <form onSubmit={handleSubmit} onReset={()=>setError([])} className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
-                        <div className="w-full px-8 py-4 flex justify-between items-center bg-gray-800 rounded-t-md">
-                            <h2 className="text-2xl font-bold font-Montserrat text-white">Modifier le Fournisseur</h2>
-                            <button type="button" className="text-white hover:scale-105" onClick={()=>setLocked(l=>!l)}>{Locked? <Lock/> : <Unlock/>}</button>
-                        </div>
+                    <FormLayout onClose={onClose} onSubmit={handleSubmit} onReset={()=>setError([])}
+                    Title={"Modifier le Fournisseur"} Locked={Locked} Type={"detail"} setLocked={setLocked}>
+                    
 
                         <div className="w-full px-8 flex gap-2 justify-start items-center">
                             <div className="flex flex-col gap-3  w-full">
@@ -271,16 +257,7 @@ const DetailFournisseurForm = ({onClose , Fournisseur}) => {
                             
                         </div>
                         
-                        <div className="w-full py-8 gap-8 flex justify-start items-center px-8 mt-8">
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="submit" disabled={Locked} className="w-full bg-primary  disabled:scale-0 text-white flex justify-center hover:scale-105  transition-all active:bg-black" ><UploadIcon/></button>
-                            </div>
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="reset" disabled={Locked} className="w-full border border-primary text-primary flex justify-center hover:scale-105 transition-all active:bg-primary disabled:scale-0" ><RotateCcw/></button>
-                            </div>
-                        </div>
-
-                    </form>
+                    </FormLayout>
                
             );
 }

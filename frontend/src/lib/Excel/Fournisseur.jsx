@@ -25,7 +25,7 @@ export default async function SubmitExcelFournisseur(row ,setExcelResult , setEr
         const error = ValidateInput(row["Nom"],row["Qualite"],row["Societe"],row["Capital"],row["Patente"],row["RC Lieu"],
                     row["RC Numero"],row["CNSS"],row["Adresse"],row["RIB"])
         if(error.join("") == ""){
-            await api.post('http://localhost:5500/fournisseur',{
+            await api.post('fournisseur',{
                         nom : row["Nom"].trim(),
                         qualite : row["Qualite"].trim(),
                         nom_societe : row["Societe"].trim(),

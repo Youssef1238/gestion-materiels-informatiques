@@ -1,11 +1,12 @@
-import { CircleAlert, Lock, RotateCcw, Unlock, UploadIcon } from "lucide-react";
+import { CircleAlert} from "lucide-react";
 import { useEffect, useState } from "react";
 import api from "../../utils/Api";
 import { useNavigate } from "react-router-dom";
-import MySelect from "../ui/MySelect";
+import MySelect from "../MySelect";
 import {
   SelectItem,
 } from "@/components/ui/select"
+import FormLayout from "../layout/FormLayout";
 
 
 
@@ -33,7 +34,7 @@ const AddArticleForm = ({onClose , ArticleData}) => {
     useEffect(()=>{
         const fetch =  async ()=>{
             try{
-                const res = await api.get(`http://localhost:5500/type`)
+                const res = await api.get(`type`)
                 setTypes(res.data)
             }catch(err){
                 Navigate('/error')
@@ -71,7 +72,7 @@ const AddArticleForm = ({onClose , ArticleData}) => {
         setError([errorNum,errorType,errorMarque,errorDesc,errorQte,errorPre,errorPru])
         if(error == ""){
             try {
-                await api.post('http://localhost:5500/articleMarche',{
+                await api.post('articleMarche',{
                     marche_id : ArticleData.marche_id,
                     Numero : data["article-numero"],
                     type_id : selectValue,
@@ -97,11 +98,11 @@ const AddArticleForm = ({onClose , ArticleData}) => {
         }
     }
             return (
-                
-                    <form onSubmit={handleSubmit} onReset={()=>{{setError([]) ; setselectValue(null)}}}  className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
-                        <div className="w-full py-4 flex justify-center items-center bg-gray-800 rounded-t-md">
-                            <h2 className="text-2xl font-bold font-Montserrat text-white">Ajouter un Article</h2>
-                        </div>
+                    
+                        
+                    
+                    <FormLayout onClose={onClose} onSubmit={handleSubmit} onReset={()=>{{setError([]) ; setselectValue(null)}}}
+                                Title={"Ajouter un Article"}  Type={"add"} >
 
                         <div className="w-full px-8 flex gap-2 justify-start items-center">
                             <div className="flex flex-col gap-3   w-1/2">
@@ -161,16 +162,7 @@ const AddArticleForm = ({onClose , ArticleData}) => {
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[6] ? <CircleAlert size={16}/>: null }{Error[6] ?? " " }</p>
                             </div> 
                         </div>
-                        <div className="w-full py-8 gap-8 flex justify-start items-center px-8 mt-8">
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="submit" className="w-full bg-primary text-white flex justify-center hover:scale-105 transition-all active:bg-black" ><UploadIcon/></button>
-                            </div>
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="reset" className="w-full border border-primary text-primary flex justify-center hover:scale-105 transition-all active:bg-primary" ><RotateCcw/></button>
-                            </div>
-                        </div>
-
-                    </form>
+                    </FormLayout>
                
             );
 }
@@ -184,7 +176,7 @@ const DetailArticleForm = ({onClose , Article}) => {
     useEffect(()=>{
         const fetch =  async ()=>{
             try{
-                const res = await api.get(`http://localhost:5500/type`)
+                const res = await api.get(`type`)
                 setTypes(res.data)
             }catch(err){
                 Navigate('/error')
@@ -216,7 +208,7 @@ const DetailArticleForm = ({onClose , Article}) => {
         setError([errorNum,errorType,errorMarque,errorDesc,errorQte,errorPre,errorPru])
         if(error == ""){
             try {
-                await api.put('http://localhost:5500/articleMarche',{
+                await api.put('articleMarche',{
                     id : Article._id,
                     marche_id : Article.marche_id,
                     Numero : data["article-numero"],
@@ -243,12 +235,8 @@ const DetailArticleForm = ({onClose , Article}) => {
         }
     }
             return (
-                
-                    <form onSubmit={handleSubmit} onReset={()=>{{setError([]) ; setselectValue(null)}}}  className="bg-white w-1/2  h-fit rounded-md shadow-md flex flex-col items-center gap-2">
-                        <div className="w-full px-8 py-4 flex justify-between items-center bg-gray-800 rounded-t-md">
-                            <h2 className="text-2xl font-bold font-Montserrat text-white">Modifier l'article</h2>
-                            <button type="button" className="text-white hover:scale-105" onClick={()=>setLocked(l=>!l)}>{Locked? <Lock/> : <Unlock/>}</button>
-                        </div>
+                    <FormLayout onClose={onClose} onSubmit={handleSubmit} onReset={()=>{{setError([]) ; setselectValue(null)}}}
+                    Title={"Modifier l'article"} Locked={Locked} Type={"detail"} setLocked={setLocked}>
 
                         <div className="w-full px-8 flex gap-2 justify-start items-center">
                             <div className="flex flex-col gap-3   w-1/2">
@@ -308,16 +296,7 @@ const DetailArticleForm = ({onClose , Article}) => {
                                     <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[6] ? <CircleAlert size={16}/>: null }{Error[6] ?? " " }</p>
                             </div> 
                         </div>
-                        <div className="w-full py-8 gap-8 flex justify-start items-center px-8 mt-8">
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="submit" disabled={Locked} className="w-full bg-primary  disabled:scale-0 text-white flex justify-center hover:scale-105  transition-all active:bg-black" ><UploadIcon/></button>
-                            </div>
-                            <div className="flex justify-center items-center w-full">
-                                    <button type="reset" disabled={Locked} className="w-full border border-primary text-primary flex justify-center hover:scale-105 transition-all active:bg-primary disabled:scale-0" ><RotateCcw/></button>
-                            </div>
-                        </div>
-
-                    </form>
+                    </FormLayout>
                
             );
 }

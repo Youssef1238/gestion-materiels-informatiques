@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
-import  {useAuth}  from "../auth/authContext"
-import { House , LayoutDashboard , LogOut,SearchIcon} from 'lucide-react'
+import  {useAuth}  from "../../auth/authContext"
+import { HelpCircle, House , LayoutDashboard , LogOut,SearchIcon} from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useState } from "react"
-import SearchModal from "./SearchModal"
+import SearchModal from "../modals/SearchModal"
 import api from "@/utils/Api"
 
 export default function NavBar() {
@@ -41,7 +41,7 @@ export default function NavBar() {
     }
     const searchMarché = async (ref)=>{
         try{
-            const res = await api.get(`http://localhost:5500/marche/search/${ref}`)
+            const res = await api.get(`marche/search/${ref}`)
             setSearchResult(res.data)
         }catch(err){
             if (err.response.status == 404) {
@@ -54,7 +54,7 @@ export default function NavBar() {
     }
     const searchEntitéAdmin = async (lib)=>{
         try{
-            const res = await api.get(`http://localhost:5500/entiteAdmin/search/${lib}`)
+            const res = await api.get(`entiteAdmin/search/${lib}`)
             setSearchResult(res.data)
         }catch(err){
             if (err.response.status == 404) {
@@ -71,8 +71,11 @@ export default function NavBar() {
                 <Link to={'/'}  className={"nav-link " + (Location == '/'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
                     <House size={32} />
                 </Link>
-                <Link to={'/Gerer'}  className={"nav-link " + (Location == '/Gerer'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
+                <Link to={'/Gerer'}  className={"nav-link " + (Location.toLocaleLowerCase() == '/gerer'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
                     <LayoutDashboard size={32} />
+                </Link>
+                <Link to={'/Manuelle'}  className={"nav-link " + (Location.toLocaleLowerCase() == '/manuelle'? "text-teal-600 font-semibold border-b-2 border-teal-600 " : " text-gray-600")}>
+                    <HelpCircle size={32} />
                 </Link>
                 <Link onClick={()=>Logout()}  className={"nav-link text-gray-600"}>
                     <LogOut size={32}/>

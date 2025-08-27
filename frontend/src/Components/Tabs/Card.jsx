@@ -1,7 +1,7 @@
 import api from "@/utils/Api";
 import { ArrowRight, BoxIcon, FormInput, Handshake, StoreIcon, Trash2 } from "lucide-react"
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Card({ entity, data, setChanged, onDetail }) {
     switch (entity) {
@@ -65,7 +65,7 @@ const FournisseurCard = ({ data, onDetail, setChanged }) => {
     }
     const deleteFournisseur = async (id)=>{
         try {
-            await api.delete('http://localhost:5500/fournisseur',{
+            await api.delete('fournisseur',{
                     data : {id : id}
             })
             setChanged(c=>!c)

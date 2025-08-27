@@ -41,7 +41,7 @@ export default function OverviewCard({title})
             "action" : animation
         },
         "Récuperer" : {
-            "p" : "Depuis une page de details d'une entité administrative , vous pouvez choisir depuis la liste des articles ceux que vous voulez récuperez et un rapport sera génere automatiquement à la fin.",
+            "p" : "Depuis une page de details d'une entité administrative , vous pouvez choisir depuis la liste des articles ceux que vous voulez récuperez et un rapport sera géneré automatiquement à la fin.",
             "icon" : <ChevronsDown />,
             "cta" : "Récuperer",
             "ctaIcon" : <ArrowUp/>,

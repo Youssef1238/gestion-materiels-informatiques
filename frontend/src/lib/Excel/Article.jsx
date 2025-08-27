@@ -3,7 +3,7 @@ import api from '@/utils/Api'
 
 
 export default async function SubmitExcelArticle(row ,setExcelResult,setErrors,Id){
-    const res = await api.get('http://localhost:5500/type')
+    const res = await api.get('type')
     const types = res.data
 
     function ValidateInput(numero,typeInput,marque,desc,qte,pre,pru){
@@ -30,7 +30,7 @@ export default async function SubmitExcelArticle(row ,setExcelResult,setErrors,I
     const error = ValidateInput(row["Numero"],row["Type"],row["Marque"],row["Description"],row["Quantite"],row["Prix estimatif"],row["Prix unitaire"])
     
     if(error.join("") == ""){
-        await api.post('http://localhost:5500/articleMarche',{
+        await api.post('articleMarche',{
             marche_id : Id,
             Numero : row["Numero"],
             type_id : types.find(el=>el.libelle.toLowerCase() == row["Type"].trim().toLowerCase())._id,

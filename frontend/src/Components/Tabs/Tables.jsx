@@ -80,7 +80,7 @@ const FournisseurTable = ({ data, setChanged, onDetail }) => {
     }
     const deleteFournisseur = async (id)=>{
         try {
-            await api.delete('http://localhost:5500/fournisseur',{
+            await api.delete('fournisseur',{
                     data : {id : id}
             })
             setChanged(c=>!c)
@@ -187,7 +187,7 @@ const CompteTable = ({ data, setChanged, onDetail }) => {
     const [isDelete,setIsDelete] = useState(null)
     const deleteUser = async (id)=>{
         try {
-            await api.delete(`http://localhost:5500/user`,{
+            await api.delete(`user`,{
                 data : {id : id}
                 
             },)
@@ -245,7 +245,7 @@ const EntiteAdminTable = ({ data, setChanged, onDetail }) => {
     const [isDelete,setIsDelete] = useState(null)
     const deleteEntiteAdmin = async (id)=>{
         try {
-            await api.delete('http://localhost:5500/entiteAdmin',{
+            await api.delete('entiteAdmin',{
                 data : {id : id}
             })
             setChanged(c=>!c)
@@ -273,7 +273,7 @@ const EntiteAdminTable = ({ data, setChanged, onDetail }) => {
                             <td className="px-4 py-2 group-hover:z-10 group-hover:relative"><Building2 size={24} color="#22c55e"/></td>
                             <td className="px-4 py-2 text-xs group-hover:z-10 group-hover:relative">{e.libelle_fr}</td>
                             <td className="px-4 py-2 text-xs">{e.libelle_ar}</td>
-                            <td className="px-4 py-2 flex gap-2">
+                            <td className="px-4 py-2 flex gap-2 group-hover:z-10 group-hover:relative">
                                 <button onClick={()=>onDetail(e)} className="p-2 shadow-sm border border-green-400  rounded-md hover:shadow-md transition-shadow"><FormInput color="#22c55e" size={20}/></button>
                                 <button onClick={()=>setIsDelete(index)} className="p-2 shadow-sm border border-red-300 rounded-md hover:shadow-md transition-shadow"><Trash2 color="#f87171" size={20}/></button>
                             </td>
@@ -307,7 +307,7 @@ const TypeTable = ({ data, setChanged, onDetail }) => {
     const [isDelete,setIsDelete] = useState(null)
     const deleteType = async (id)=>{
         try {
-            await api.delete('http://localhost:5500/type',{
+            await api.delete('type',{
                     data : {id : id}   
             })
             setChanged(c=>!c)

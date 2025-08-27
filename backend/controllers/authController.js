@@ -9,7 +9,7 @@ const User = require('../models/userSchema')
 
 
 const Login = async (req,res)=>{
-    if(!req.body.pseudo || !req.body.password) return res.status(400).send("pseudo or password are missing!")
+    if(!req.body.pseudo || !req.body.password) return res.status(400).send("Pseudo ou mot de passe manquant !")
         try{
             const foundUser = await User.findOne({pseudo : req.body.pseudo})
             if(!foundUser) return res.status(401).send("pseudo")
@@ -53,7 +53,7 @@ const Logout = async (req,res)=>{
         sameSite: 'strict',
         path: '/auth/refresh', 
     });
-    res.status(204).send("Logged out successfully");
+    res.status(204).send("Déconnexion réussie.");
 }
 
 

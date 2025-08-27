@@ -14,6 +14,7 @@ import {
 import Manage from './pages/Manage.jsx'
 import Marché from './pages/Marché.jsx'
 import EntitéAdmin from './pages/EntiteAdmin.jsx'
+import Manual from './pages/Manual.jsx'
 
 ChartJS.register(...registerables);
 
@@ -60,6 +61,13 @@ const router = createBrowserRouter(
       element :
       <ProtectedRoute>
         <EntitéAdmin/>
+      </ProtectedRoute>  
+    },
+    {
+      path : "/Manuelle",
+      element :
+      <ProtectedRoute>
+        <Manual/>
       </ProtectedRoute>  
     },
 

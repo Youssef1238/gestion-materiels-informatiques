@@ -3,7 +3,7 @@ import { useAuth } from "../auth/authContext"
 import { useNavigate } from "react-router-dom"
 import {CircleAlert, MonitorCog} from 'lucide-react'
 
-import AdminInfoModal from "../Components/AdminInfoModal.jsx"
+import AdminInfoModal from "@/Components/modals/AdminInfoModal"
 
 export default function Login() {
     document.title = "Login"
@@ -29,8 +29,8 @@ export default function Login() {
     }
 
     async function handelLogin() {
-        const errorPseudo = pseudo.current.value.trim() == ""?"Required":""
-        const errorPass = pass.current.value.trim() == ""?"Required":""
+        const errorPseudo = pseudo.current.value.trim() == ""?"Obligatoire":""
+        const errorPass = pass.current.value.trim() == ""?"Obligatoire":""
         
 
         setError([errorPseudo,errorPass])
@@ -66,7 +66,7 @@ export default function Login() {
                     <div className="w-[50%] h-[50%] bg-intro bg-cover bg-center m-auto mt-8"></div>
                     
                 </div>
-                <p className="absolute right-4 bottom-8 text-light text-lg font-Montserrat text-primary">
+                <p className="absolute right-4 bottom-8  text-lg font-Montserrat text-gray-400">
                         © 2025 - All rights reserved
                 </p>
             </div>
@@ -74,7 +74,7 @@ export default function Login() {
             <div className="flex flex-col  items-center px-6 bg-white  grow border-l-2 border-[#7fd0c7]">
                 <div className="text-center my-20">
                     <h2 className="text-3xl font-Roboto font-light text-gray-700">Bienvenue</h2>
-                    <p className="text-lg font-Montserrat text-primary font-light mt-6 text-wrap w-[80%] m-auto">
+                    <p className="text-lg font-Montserrat text-gray-400 font-light mt-6 text-wrap w-[80%] m-auto">
                         Si vous avez oublié vos coordonnées ou si vous ne possédez pas de compte, veuillez contacter
                         <span className="font-medium text-secondary hover:text-primary cursor-pointer" onClick={openModal}> l&apos;administrateur</span>.
                     </p>
@@ -82,26 +82,26 @@ export default function Login() {
                 
                 <div className="w-[50%] flex flex-col gap-2 mt-10" onKeyDown={(e)=> {if(e.key == "Enter") handelLogin()}}>
                     <div className="w-full flex flex-col gap-2">
-                        <label htmlFor="pseudo" className="text-lg text-primary font-semibold font-Montserrat mb-2">Pseudo</label>
+                        <label htmlFor="pseudo" className="text-sm text-gray-600 font-semibold font-Montserrat mb-2">Pseudo</label>
                         <input type="text"id="pseudo"
                         className={"input-base w-full px-4 py-2 border text-sm  rounded-md shadow-sm focus:ring-secondary focus:border-secondary outline-none " + (Error[0]?"border-red-500":"border-primary")}
-                        placeholder="Enter your pseudo"
+                        placeholder="Nom d'utilisateur"
                         ref={pseudo}
                         onChange={Clear}
                         required
                         />
-                        <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[0] ? <CircleAlert />: null }{Error[0] ?? " " }</p>
+                        <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[0] ? <CircleAlert size={16}/>: null }{Error[0] ?? " " }</p>
                     </div>
                     <div className="w-full flex flex-col gap-2">
-                        <label htmlFor="password" className="text-lg text-primary font-semibold font-Montserrat mb-2">Password</label>
+                        <label htmlFor="password" className="text-sm text-gray-600 font-semibold font-Montserrat mb-2">Mot de passe</label>
                         <input type="password" id="password"
                         className={"input-base w-full text-sm px-4 py-2 border rounded-md shadow-sm focus:ring-secondary focus:border-secondary outline-none " + (Error[1]?"border-red-500":"border-primary")}
-                        placeholder="Enter your password"
+                        placeholder="Password"
                         ref={pass}
                         onChange={Clear}
                         required
                         />
-                        <p className="text-sm text-red-500 mt-1 flex items-center gap-1 h-6">{Error[1] ? <CircleAlert /> : null }{Error[1] ?? " " }</p>
+                        <p className="text-xs text-red-500 mt-1 flex items-center gap-1 h-6">{Error[1] ? <CircleAlert size={16}/> : null }{Error[1] ?? " " }</p>
                     </div>
                     <button onClick={()=>handelLogin()} className="w-full bg-primary hover:bg-secondary mt-3 text-white text-lg focus:ring-2 focus:ring-secondary focus:ring-offset-2">
                     Login

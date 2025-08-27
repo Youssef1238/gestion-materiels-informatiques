@@ -19,7 +19,7 @@ const addFournisseur = async (req,res)=>{
     if(!req.body.nom || !req.body.qualite || !req.body.nom_societe || !req.body.capital || !req.body.patente
         || !req.body.RC_lieu || !req.body.RC_num || !req.body.CNSS || !req.body.adresse || !req.body.RIB
     ){
-        return res.status(400).send("all fields are required")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     try{
         const fournisseur = new Fournisseur({
@@ -43,7 +43,7 @@ const addFournisseur = async (req,res)=>{
 }
 
 const UpdateFournisseur = async (req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await Fournisseur.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -57,7 +57,7 @@ const UpdateFournisseur = async (req,res)=>{
             req.body.CNSS && await Fournisseur.updateOne({_id : req.body.id},{$set : {CNSS : req.body.CNSS}});
             req.body.adresse && await Fournisseur.updateOne({_id : req.body.id},{$set : {adresse : req.body.adresse}});
             req.body.RIB && await Fournisseur.updateOne({_id : req.body.id},{$set : {RIB : req.body.RIB}});
-            res.send("Updated")
+            res.send("Mis à jour avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -65,7 +65,7 @@ const UpdateFournisseur = async (req,res)=>{
 }
 
 const deleteFournisseur = async(req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await Fournisseur.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -75,7 +75,7 @@ const deleteFournisseur = async(req,res)=>{
             await ArticleMarche.deleteMany({marche_id : {$in : articleIds.map(e=>e._id)}})
             await Marche.deleteMany({fournisseur_id : req.body.id})
             await Fournisseur.deleteOne({_id : req.body.id})
-            res.send("Deleted")
+            res.send("Supprimé avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -83,7 +83,7 @@ const deleteFournisseur = async(req,res)=>{
 }
 
 const getFournisseur = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send('id needed')
+    if(!req.params.id) return res.status(400).send('id requis.')
     try{
         const entiteLogs = await EntiteLog.find({entiteAdmin_id : req.params.id})
         res.send(entiteLogs)

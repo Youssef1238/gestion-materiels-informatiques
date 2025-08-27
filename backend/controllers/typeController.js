@@ -16,7 +16,7 @@ const getTypes = async (req,res)=>{
 
 const addType = async (req,res)=>{
     if(!req.body.order || !req.body.libelle){
-        return res.status(400).send("order and libelle are required")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     try{
         let foundType = await Type.findOne({libelle: req.body.libelle});
@@ -36,7 +36,7 @@ const addType = async (req,res)=>{
 }
 
 const UpdateType = async (req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await Type.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -46,7 +46,7 @@ const UpdateType = async (req,res)=>{
             if(foundType) return res.status(409).send("Ordre existe déjà !")
             req.body.order && await Type.updateOne({_id : req.body.id},{$set : {order : req.body.order}});
             req.body.libelle && await Type.updateOne({_id : req.body.id},{$set : {libelle : req.body.libelle}});
-            res.send("Updated")
+            res.send("Mis à jour avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -54,7 +54,7 @@ const UpdateType = async (req,res)=>{
 }
 
 const deleteType = async(req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await Type.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -62,7 +62,7 @@ const deleteType = async(req,res)=>{
             await ArticleLivre.deleteMany({article_marche_id : {$in : Ids.map(e=>e._id)}})
             await ArticleMarche.deleteMany({type_id : req.body.id})
             await Type.deleteOne({_id : req.body.id})
-            res.send("Deleted")
+            res.send("Supprimé avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -70,7 +70,7 @@ const deleteType = async(req,res)=>{
 }
 
 const getType = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send('id needed')
+    if(!req.params.id) return res.status(400).send('id requis.')
     try{
         const type = await Type.findOne({_id : req.params.id})
         res.send(type)

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {setAccessToken as storeToken} from '../utils/Api'
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 export const authContext = createContext();
 
@@ -14,7 +14,7 @@ export const AuthProvider = ({children}) => {
     useEffect(() => {
         const refreshToken = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5500/auth/refresh', { withCredentials: true });
+                const { data } = await axios.get(`${BASE_URL}/auth/refresh`, { withCredentials: true });
                 storeToken(data.accessToken);
                 setAccessToken(data.accessToken);
             } catch (err) { 
@@ -27,10 +27,10 @@ export const AuthProvider = ({children}) => {
         if(AccessToken !== null && isLoading === true) {
             setIsLoading(false);
         }
-    }, [AccessToken]);
+    }, [AccessToken,isLoading]);
     const login = async (pseudo, password) => {
         try {
-                const res = await axios.post("http://localhost:5500/auth/login",{pseudo, password}, {
+                const res = await axios.post(`${BASE_URL}/auth/login`,{pseudo, password}, {
                     withCredentials: true})
                 storeToken(res.data.accessToken);
                 setAccessToken(res.data.accessToken);
@@ -44,7 +44,7 @@ export const AuthProvider = ({children}) => {
                     return {
                         success: false,
                         error : false,
-                        message: error.response.data == "pseudo"?["Incorrect Pseudo",""] : ["","Incorrect Password"]
+                        message: error.response.data == "pseudo"?["Pseudo Invalid",""] : ["","Mot de Passe Invalid"]
                     }
                 } else if (error.request) {
                     console.error(error);
@@ -66,7 +66,7 @@ export const AuthProvider = ({children}) => {
         };
     const logout = async () => {
         try {
-            await axios.get("http://localhost:5500/auth/logout", {withCredentials: true });
+            await axios.get(`${BASE_URL}/auth/logout`, {withCredentials: true });
         } catch (error) {
             console.error("Logout error:", error);
         }

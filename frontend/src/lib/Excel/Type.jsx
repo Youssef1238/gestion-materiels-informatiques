@@ -13,7 +13,7 @@ export default async function SubmitExcelType(row ,setExcelResult, setErrors ){
     
     const error = await ValidateInput(row["Ordre"],row["Libelle"])
     if(error.join("") == ""){
-        await api.post('http://localhost:5500/type',{
+        await api.post('type',{
             libelle : row["Libelle"].trim(),
             order : row["Ordre"]
         })

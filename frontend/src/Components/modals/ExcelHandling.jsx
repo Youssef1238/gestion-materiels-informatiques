@@ -1,8 +1,8 @@
 import * as XLSX from'xlsx'
-import SubmitExcelType from '../lib/Excel/Type'
-import SubmitExcelMarché from '../lib/Excel/Marché'
-import SubmitExcelFournisseur from '../lib/Excel/Fournisseur'
-import SubmitExcelEntitéAdmin from '../lib/Excel/EntitéAdmin'
+import SubmitExcelType from '@/lib/Excel/Type'
+import SubmitExcelMarché from '@/lib/Excel/Marché'
+import SubmitExcelFournisseur from '@/lib/Excel/Fournisseur'
+import SubmitExcelEntitéAdmin from '@/lib/Excel/EntitéAdmin'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { ArrowRight, Circle } from 'lucide-react'
@@ -128,7 +128,7 @@ export default function ExcelHandling({e, Entity  , onClose ,Id}){
                 </div>
                 <div className="w-full flex justify-center items-center gap-2">
                 Consulter le Manuelle 
-                <button className='text-black hover:text-secondary shadow-none'><ArrowRight/></button>
+                <button className='text-black hover:text-secondary shadow-none' onClick={()=>Navigate('/manuelle')}><ArrowRight/></button>
                 </div>
             </div>
             }

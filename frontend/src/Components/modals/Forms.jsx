@@ -1,10 +1,10 @@
-import ArticleForm from "./forms/Article";
-import CompteForm from "./forms/Compte";
-import EntitéAdminForm from "./forms/EntitéAdmin";
-import FournisseurForm from "./forms/Fournisseur";
-import MarchéForm from "./forms/Marché";
-import SubArticleForm from "./forms/SubArticle";
-import TypeForm from "./forms/Type";
+import ArticleForm from "../forms/Article";
+import CompteForm from "../forms/Compte";
+import EntitéAdminForm from "../forms/EntitéAdmin";
+import FournisseurForm from "../forms/Fournisseur";
+import MarchéForm from "../forms/Marché";
+import SubArticleForm from "../forms/SubArticle";
+import TypeForm from "../forms/Type";
 
 export default function Forms({type , data , entity, onClose}) {
     if (!type || !entity) return null;

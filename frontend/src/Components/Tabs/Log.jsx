@@ -2,7 +2,7 @@ import api from "@/utils/Api"
 import { Download } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Pagination from "./Pagination"
+import Pagination from "../Pagination"
 
 
 export default function Log({EntitéAdminId,Libelle}) {
@@ -31,7 +31,7 @@ export default function Log({EntitéAdminId,Libelle}) {
     useEffect(()=>{
         const fetchData = async ()=>{
             try {
-                const res = await api.get(`http://localhost:5500/entiteLog/${EntitéAdminId}`)
+                const res = await api.get(`entiteLog/${EntitéAdminId}`)
                 setLogs(res.data)
                 setFilteredLogs(res.data)
             } catch (err) {
@@ -52,11 +52,11 @@ export default function Log({EntitéAdminId,Libelle}) {
     const DownloadRapport = async (log)=>{
         try {
             const date = log.date.split('T')[0]
-            const res = await api.post(`http://localhost:5500/articleLivre/items`,{
+            const res = await api.post(`articleLivre/items`,{
                 itemsId : log.articles
             }) 
             console.log(res.data)
-            const response = await api.post(`http://localhost:5500/generate`,{
+            const response = await api.post(`generate`,{
                 decharge : log.affectation,
                 entiteAdmin : Libelle,
                 date : date,

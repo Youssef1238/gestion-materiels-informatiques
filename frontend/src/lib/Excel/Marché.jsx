@@ -1,6 +1,6 @@
 import api from '@/utils/Api'
 export default async function SubmitExcelMarché(row ,setExcelResult, setErrors){
-    const res = await api.get('http://localhost:5500/fournisseur')
+    const res = await api.get('fournisseur')
     const fournisseurs = res.data
     function excelDateToJSDate(date) {
         if(typeof date !== "number") return new Date(date)
@@ -32,7 +32,7 @@ export default async function SubmitExcelMarché(row ,setExcelResult, setErrors)
     }   
         const error = await ValidateExcelInput(row["Objet"],row["Reference"],row["Type"],row["Fournisseur"],row["Date de Creation"])
         if(error.join("") == ""){
-                await api.post('http://localhost:5500/marche',{
+                await api.post('marche',{
                     objet : row["Objet"].trim(),
                     reference : row["Reference"],
                     type : row["Type"].trim(),

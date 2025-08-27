@@ -18,7 +18,7 @@ export default async function SubmitExcelEntitéAdmin(row ,setExcelResult,setErr
     const error = ValidateInput(row["Libelle en Arabe"], row["Libelle en Français"]);
     
     if(error.join("") == ""){
-        await api.post('http://localhost:5500/entiteAdmin',{
+        await api.post('entiteAdmin',{
                     libelle_ar : row["Libelle en Arabe"].trim(),
                     libelle_fr : row["Libelle en Français"].trim(),
                 })

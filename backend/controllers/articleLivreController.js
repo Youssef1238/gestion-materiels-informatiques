@@ -65,7 +65,7 @@ const addArticleLivre = async (req,res)=>{
     if(!req.body.article_marche_id || !req.body.Numero || !req.body.Numero_Serie || !req.body.date_Livraison
         || !req.body.cab || req.body.etat === undefined ||  req.body.etat === null
     ){
-        return res.status(400).send("all fields are required ")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     try{
         const articleMarche = await ArticleMarche.findOne({_id : req.body.article_marche_id})
@@ -91,7 +91,7 @@ const addArticleLivre = async (req,res)=>{
 }
 
 const UpdateArticleLivre = async (req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
     try{
 
         const item = await ArticleLivre.findOne({_id : req.body.id})
@@ -118,7 +118,7 @@ const UpdateArticleLivre = async (req,res)=>{
         req.body.date_Livraison && await ArticleLivre.updateOne({_id : req.body.id},{$set : {date_Livraison : req.body.date_Livraison}});
         req.body.cab && await ArticleLivre.updateOne({_id : req.body.id},{$set : {cab : req.body.cab}});
         req.body.etat !== null && req.body.etat !== undefined && await ArticleLivre.updateOne({_id : req.body.id},{$set : {etat : req.body.etat}});
-        res.send("Updated")
+        res.send("Mis à jour avec succès")
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
     }      
@@ -126,12 +126,12 @@ const UpdateArticleLivre = async (req,res)=>{
 }
 
 const deleteArticleLivre = async(req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
     try{
         const articleLivre = await ArticleLivre.findOne({_id : req.body.id})
         if(!articleLivre) return res.sendStatus(404)
         await ArticleLivre.deleteOne({_id : req.body.id})
-        res.send("Deleted")
+        res.send("Supprimé avec succès.")
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
     }
@@ -140,12 +140,12 @@ const deleteArticleLivre = async(req,res)=>{
 }
 
 const deleteByArticleMarche = async(req,res)=>{
-    if(!req.params.id) res.status(400).send("id is required")
+    if(!req.params.id) res.status(400).send("id requis.")
         try{
             const articleLivre = await ArticleLivre.findOne({article_marche_id : req.params.id})
             if(!articleLivre) return res.sendStatus(404)
             await ArticleLivre.deleteMany({article_marche_id : req.params.id})
-            res.send("Deleted")
+            res.send("Supprimé avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -153,7 +153,7 @@ const deleteByArticleMarche = async(req,res)=>{
 }
 
 const getArticleByArticleMarche = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send("id needed")
+    if(!req.params.id) return res.status(400).send("id requis.")
     try{
         const articleLivres = await ArticleLivre.find({article_marche_id : req.params.id})
         res.json(articleLivres)
@@ -163,7 +163,7 @@ const getArticleByArticleMarche = async (req,res)=>{
     
 }
 const getArticleLivre = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send("id is required")
+    if(!req.params.id) return res.status(400).send("id requis.")
         try{
             const articleLivre = await ArticleLivre.findOne({_id : req.params.id})
             if(articleLivre == undefined || articleLivre == null) return res.sendStatus(404)
@@ -186,7 +186,7 @@ const getArticleLivre = async (req,res)=>{
 }
 
 const getArticleByEntite = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send("id required")
+    if(!req.params.id) return res.status(400).send("id requis.")
         try{
 
             const affectations = await Affectation.find({
@@ -248,7 +248,7 @@ const findParaInfo = async (articleId)=>{
 }
 
 const getArticlebyMarche = async(req,res)=>{
-    if(!req.params.id) return res.status(400).send("id is required")
+    if(!req.params.id) return res.status(400).send("id requis.")
         try{
             const articleMarches = await ArticleMarche.find({marche_id : req.params.id})
             if(articleMarches.length == 0) return res.send([])
@@ -270,7 +270,7 @@ const getArticlebyMarche = async(req,res)=>{
 }
 
 const getArticleBySerie = async (req,res)=>{
-    if(!req.params.num) return res.status(400).send("numero de serie is required")
+    if(!req.params.num) return res.status(400).send("Numero de serie requis.")
         try{
             const articleLivre = await ArticleLivre.find({Numero_Serie : req.params.num})
             if(articleLivre.length == 0) return res.send([])
@@ -294,7 +294,7 @@ const getArticleBySerie = async (req,res)=>{
 
 const getItems = async (req,res)=>{
     if (!Array.isArray(req.body.itemsId) || req.body.itemsId.length === 0) {
-        return res.status(400).send("ids are required");
+        return res.status(400).send("Les identifiants sont requis.");
     }
     try {
         const articleLivres = await ArticleLivre.find({ _id: { $in: req.body.itemsId } });
@@ -325,7 +325,7 @@ const getItems = async (req,res)=>{
 const searchArticleLivre = async (req,res)=>{
     try {
         if (!req.params.query) {
-            return res.status(400).send("Serial number is required");
+            return res.status(400).send("Numero de serie requis.");
         }
         const regex = new RegExp(req.params.query, 'i');
         const articlesLivres = await ArticleLivre.find({ Numero_Serie: { $regex: regex } });

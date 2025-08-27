@@ -18,7 +18,7 @@ export default function AffecterModal({EntitéAdminId,onClose,Type,Libelle,Artic
     };
     const affecter = async(id,date)=>{
         try {
-            await api.post('http://localhost:5500/affectation',
+            await api.post('affectation',
                 {
                     article_livre_id : id,
                     entiteAdmin_id : EntitéAdminId,
@@ -26,7 +26,7 @@ export default function AffecterModal({EntitéAdminId,onClose,Type,Libelle,Artic
                 }
             )
             
-            await api.put('http://localhost:5500/articleLivre',
+            await api.put('articleLivre',
                 {
                     id : id,
                     etat : true
@@ -40,14 +40,14 @@ export default function AffecterModal({EntitéAdminId,onClose,Type,Libelle,Artic
     }
     const recuperer = async(id,date)=>{
         try {
-            await api.put('http://localhost:5500/affectation/recuperer',
+            await api.put('affectation/recuperer',
                 {
                     id : id,
                     date_recuperation : date
                 }
             )
             
-            await api.put('http://localhost:5500/articleLivre',
+            await api.put('articleLivre',
                 {
                     id : id,
                     etat : false
@@ -79,7 +79,7 @@ export default function AffecterModal({EntitéAdminId,onClose,Type,Libelle,Artic
             }
         }
         try {
-            await api.post(`http://localhost:5500/entiteLog`,{
+            await api.post(`entiteLog`,{
                 entiteAdmin_id : EntitéAdminId,
                 date : date,
                 affectation : (Type == "Affectation"),

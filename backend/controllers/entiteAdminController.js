@@ -18,7 +18,7 @@ const getEntiteAdmins = async (req,res)=>{
 
 const addEntiteAdmin = async (req,res)=>{
     if(!req.body.libelle_ar || !req.body.libelle_fr ){
-        return res.status(400).send("all fields are required ")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     try{
         let foundEntiteAdmin = await EntiteAdmin.findOne({libelle_ar: req.body.libelle_ar});
@@ -38,7 +38,7 @@ const addEntiteAdmin = async (req,res)=>{
 }
 
 const UpdateEntiteAdmin = async (req,res)=>{
-    if(!req.body.id) res.status(403).send("id is required")
+    if(!req.body.id) res.status(403).send("id requis.")
         try{
             const item = await EntiteAdmin.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -48,7 +48,7 @@ const UpdateEntiteAdmin = async (req,res)=>{
             if(foundEntiteAdmin) return res.status(409).send("libelle en Français existe déjà !")
             req.body.libelle_ar && await EntiteAdmin.updateOne({_id : req.body.id},{$set : {libelle_ar : req.body.libelle_ar}});
             req.body.libelle_fr && await EntiteAdmin.updateOne({_id : req.body.id},{$set : {libelle_fr : req.body.libelle_fr}});
-            res.send("Updated")
+            res.send("Mis à jour avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -56,14 +56,14 @@ const UpdateEntiteAdmin = async (req,res)=>{
 }
 
 const deleteEntiteAdmin = async(req,res)=>{
-    if(!req.body.id) res.status(403).send("id is required")
+    if(!req.body.id) res.status(403).send("id requis.")
         try{
             const item = await EntiteAdmin.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
             await Affectation.deleteMany({entiteAdmin_id : req.body.id})
             await entieLog.deleteMany({entiteAdmin_id : req.body.id})
             await EntiteAdmin.deleteOne({_id : req.body.id})
-            res.send("Deleted")
+            res.send("Supprimé avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -71,7 +71,7 @@ const deleteEntiteAdmin = async(req,res)=>{
 }
 
 const getEntiteAdmin = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send('id needed')
+    if(!req.params.id) return res.status(400).send('id requis.')
     try{
         const entiteAdmin = await EntiteAdmin.findOne({_id : req.params.id})
         res.json(entiteAdmin)
@@ -84,7 +84,7 @@ const searchEntiteAdmin = async (req,res)=>{
     
     try {
         if (!req.params.query) {
-            return res.status(400).send("libelle is required");
+            return res.status(400).send("libelle requis.");
         }
         const regex = new RegExp(req.params.query, 'i');
         const EntiteAdmins = await EntiteAdmin.find({ libelle_fr: { $regex: regex } });
@@ -104,7 +104,7 @@ const searchEntiteAdmin = async (req,res)=>{
 
 const getEntiteAdminStats = async (req,res)=>{
     
-    if(!req.params.id) return res.status(400).send("id required")
+    if(!req.params.id) return res.status(400).send("id requis.")
         try{
             const totalAffectations = await Affectation.countDocuments({ entiteAdmin_id: req.params.id });
 

@@ -17,16 +17,17 @@ import  {useAuth}  from "../auth/authContext"
 import {jwtDecode} from 'jwt-decode';
 import Filters from "@/Components/Filters";
 import Sortfields from "@/Components/SortFields";
-import Forms from "@/Components/Forms";
-import Card from "@/Components/Card";
-import Table from "@/Components/Tables";
+import Forms from "@/Components/modals/Forms";
+import Card from "@/Components/Tabs/Card";
+import Table from "@/Components/Tabs/Tables";
 import { useNavigate } from "react-router-dom";
 import getEntityInfo from "@/lib/Entity";
 import Pagination from "@/Components/Pagination";
 import { ExcelIcon } from "@/assets/Icons";
-import ExcelHandling from "@/Components/ExcelHandling";
+import ExcelHandling from "@/Components/modals/ExcelHandling";
 
 export default function Manage() {
+    document.title = "Gérer"
     const { AccessToken } = useAuth();
     const decoded = jwtDecode(AccessToken);
     const isAdmin = decoded.isAdmin;
@@ -54,7 +55,7 @@ export default function Manage() {
     const fetchData = async (Entity)=>{
             try{
                 setIsLoading(true)
-                const res = await api.get(`http://localhost:5500/${apiRoute[Entity]}`)
+                const res = await api.get(`${apiRoute[Entity]}`)
                 setData(res.data)
                 setFilteredData(res.data)
                 setSortedData(res.data)
@@ -187,8 +188,8 @@ export default function Manage() {
                     <button 
                         className={"w-[200px] px-10 py-4 "+entityClasses[Entity].bg+"  text-gray-50 cursor-default  disabled:bg-gray-300 disabled:text-gray-50  rounded-full text-sm relative"} disabled={Entity == "Article"}
                     >
-                        <div disabled={Entity == "Article"} className={"h-full cursor-pointer flex justify-center items-center px-8 absolute top-1/2 left-0 rounded-l-full "+entityClasses[Entity].shadow +" hover:shadow-md transition-shadow -translate-x-1/2 -translate-y-1/2 " + (Entity == "Article"?"bg-gray-300" : entityClasses[Entity].bg)}>
-                                {Entity != "Article" && <PlusIcon onClick={()=> {setFormType("add");openForm()}} size={24} /> }
+                        <div disabled={Entity == "Article"} onClick={()=> {setFormType("add");openForm()}} className={"h-full cursor-pointer flex justify-center items-center px-8 absolute top-1/2 left-0 rounded-l-full "+entityClasses[Entity].shadow +" hover:shadow-md transition-shadow -translate-x-1/2 -translate-y-1/2 " + (Entity == "Article"?"bg-gray-300" : entityClasses[Entity].bg)}>
+                                {Entity != "Article" && <PlusIcon  size={24} /> }
                         </div>
                         {Entity=="Type de matériel"?"Type":Entity}
                         
@@ -214,11 +215,11 @@ export default function Manage() {
                 <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                     <PopoverTrigger className="flex gap-4 text-sm items-center bg-white disabled:bg-gray-300 disabled:text-gray-50"
                         onClick={() => setIsFilterOpen(true)}
-                        disabled={["Entité Admin.","Type de matériel"].includes(Entity)}
+                        disabled={["Entité Admin.","Type de matériel","Fournisseur"].includes(Entity)}
                     >
-                        Filter <Settings2 size={24}/>
+                        Filtrer <Settings2 size={24}/>
                     </PopoverTrigger>
-                    {   ["Entité Admin.","Type de matériel"].includes(Entity) ?
+                    {   ["Entité Admin.","Type de matériel","Fournisseur"].includes(Entity) ?
                         null :
                         <Filters  entity={Entity} setIsOpen={setIsFilterOpen} data={data} FilterData={(d)=>FilterData(d)}/>
                         

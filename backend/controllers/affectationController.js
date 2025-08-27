@@ -14,7 +14,7 @@ const getAffectations = async (req,res)=>{
 
 const addAffectation = async (req,res)=>{
     if(!req.body.article_livre_id || !req.body.entiteAdmin_id || !req.body.date_affectation ){
-        return res.status(400).send("all fields are required ")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     try{
         const affectation = new Affectation({
@@ -31,7 +31,7 @@ const addAffectation = async (req,res)=>{
 }
 
 const UpdateAffectation = async (req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
     try{
 
         const affectation = await Affectation.findOne({_id : req.body.id})
@@ -42,7 +42,7 @@ const UpdateAffectation = async (req,res)=>{
         req.body.entiteAdmin_id && await Affectation.updateOne({_id : req.body.id},{$set : {entiteAdmin_id : req.body.entiteAdmin_id}});
         req.body.date_affectation && await Affectation.updateOne({_id : req.body.id},{$set : {date_affectation : req.body.date_affectation}});
         req.body.date_recuperation && await Affectation.updateOne({_id : req.body.id},{$set : {date_recuperation : req.body.date_recuperation}});
-        res.send("Updated")
+        res.send("Mis & jour avec succès")
 
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
@@ -51,10 +51,10 @@ const UpdateAffectation = async (req,res)=>{
 }
 
 const deleteAffectation = async(req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
     try{
         await Affectation.deleteOne({_id : req.body.id})
-        res.send("Deleted")
+        res.send("Supprimé avec succès.")
     }catch(err){
         res.status(500).json({title : "Server error",message : err.message})
     }
@@ -62,7 +62,7 @@ const deleteAffectation = async(req,res)=>{
 }
 
 const getAffectationByArticle = async (req,res)=>{
-    if(!req.params.id ) return res.status(400).send("id required")
+    if(!req.params.id ) return res.status(400).send("id requis.")
     try{
         const affectation = await Affectation.find({article_livre_id : req.params.id})
         res.json(affectation)
@@ -74,7 +74,7 @@ const getAffectationByArticle = async (req,res)=>{
 
 const handelRecuperation = async (req,res)=>{
     if (!req.body.id || !req.body.date_recuperation) {
-        return res.status(400).send("Both id and date_recuperation are required");
+        return res.status(400).send("Les champs 'id' et 'date_recuperation' sont tous deux obligatoires.");
     }
     try {
         const result = await Affectation.updateOne(
@@ -82,9 +82,9 @@ const handelRecuperation = async (req,res)=>{
             { $set: { date_recuperation: req.body.date_recuperation } }
         );
         if (result.matchedCount === 0) {
-            return res.status(404).send("Affectation not found or already recovered");
+            return res.status(404).send("Affectation non trouvée ou déjà récupérée.");
         }
-        res.send("Recuperation updated successfully");
+        res.send("Récupération mise à jour avec succès");
     } catch (err) {
         res.status(500).json({ title: "Server error", message: err.message });
     }

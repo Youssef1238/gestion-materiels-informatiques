@@ -3,7 +3,7 @@ import api from '@/utils/Api'
 
 
 export default async function SubmitExcelSubArticle(row ,setExcelResult,setErrors,Id){
-    const res = await api.get(`http://localhost:5500/articleMarche/${Id}`)
+    const res = await api.get(`articleMarche/${Id}`)
     const Article = res.data
 
     function excelDateToJSDate(date) {
@@ -37,7 +37,7 @@ export default async function SubmitExcelSubArticle(row ,setExcelResult,setError
     const error = ValidateInput(row["Numero"],row["Numero de Serie"],row["Date de Livraison"],row["CAB"])
     
     if(error.join("") == ""){
-        await api.post('http://localhost:5500/articleLivre',{
+        await api.post('articleLivre',{
             article_marche_id : Id,
             Numero : row["Numero"],
             Numero_Serie : row["Numero de Serie"],

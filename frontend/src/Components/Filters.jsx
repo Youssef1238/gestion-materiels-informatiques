@@ -10,7 +10,6 @@ export default function Filters({ entity , setIsOpen , FilterData , data}) {
     const [DefaultValues, setDefaultValues] = useState([])
     const FilterFomrs = {
         "Marché":<MarcheFilter DefaultValues={DefaultValues}/>,
-        "Fournisseur":<FournisseurFilter DefaultValues={DefaultValues}/>,
         "Compte":<AccountFilter DefaultValues={DefaultValues} />,
         "Article":<ArticleFilter DefaultValues={DefaultValues} />,
     }
@@ -38,12 +37,6 @@ export default function Filters({ entity , setIsOpen , FilterData , data}) {
         )
         FilterData(Fdata)
     }
-    const filterFournisseur = (formData)=>{
-        const qualite = formData.get('fournisseur-qualité');
-        setDefaultValues([qualite])
-        const Fdata = Array.from(data).filter(a=>!qualite || a.qualite == qualite)
-        FilterData(Fdata)
-    }
     const filterCompte = (formData)=>{
         const role = formData.get('user-role');
         setDefaultValues([role])
@@ -55,7 +48,6 @@ export default function Filters({ entity , setIsOpen , FilterData , data}) {
 
     const filterfunc = {
         "Marché": filterMarche,
-        "Fournisseur": filterFournisseur,
         "Compte": filterCompte,
         "Article": filterArtcile
     }
@@ -79,7 +71,7 @@ const MarcheFilter = ({DefaultValues})=>{
     useEffect(() => {
         const fetch =  async ()=>{
             try{
-                const res = await api.get(`http://localhost:5500/fournisseur`)
+                const res = await api.get(`fournisseur`)
                 setFournisseurs(res.data)
                 setDate(DefaultValues?.[0] || "");
                 setType(DefaultValues?.[1] || "");
@@ -105,7 +97,7 @@ const MarcheFilter = ({DefaultValues})=>{
                 <div className="py-2 px-4 flex flex-col gap-2 items-start bg-gray-100">
                     <label htmlFor="marché-fournisseur" className="text-xs text-gray-700">Fournisseur</label>
                     <select id="marché-fournisseur" name="marché-fournisseur" value={fournisseur} onChange={e => setFournisseur(e.target.value)} className="w-full text-xs  px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="" >All</option>
+                            <option value="" >Tout</option>
                         {
                             Array.from(fournisseurs).map((e,i)=>{
                                 return <option value={e.nom} key={i}>{e.nom}</option>
@@ -118,26 +110,7 @@ const MarcheFilter = ({DefaultValues})=>{
 
     )
 }
-const FournisseurFilter = ({DefaultValues})=>{
-    const [qualite, setQualite] = useState(DefaultValues?.[0] || "");
 
-    useEffect(() => {
-        setQualite(DefaultValues?.[0] || "");
-    }, [DefaultValues]);
-    return (
-            <div className="flex flex-col">
-                <div className=" px-4 flex flex-col gap-2 items-start bg-gray-100">
-                    <label htmlFor="fournisseur-qualité" className="text-xs text-gray-700">Qualité</label>
-                    <select id="fournisseur-qualité" name="fournisseur-qualité" value={qualite} onChange={e => setQualite(e.target.value)} className="w-full px-3 text-xs py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">All</option>
-                        <option value="Gerant">Gérant</option>
-                        <option value="RH">RH</option>
-                        
-                    </select>
-                </div>
-            </div>
-    )
-}
 
 const AccountFilter = ({DefaultValues})=>{
     const [role, setRole] = useState(DefaultValues?.[0] || "");
@@ -150,7 +123,7 @@ const AccountFilter = ({DefaultValues})=>{
                 <div className="px-4 flex flex-col gap-2 items-start bg-gray-100">
                     <label htmlFor="user-role" className="text-xs text-gray-700">Role</label>
                     <select id="user-role" value={role} onChange={e => setRole(e.target.value)}  name="user-role" className="w-full px-3 py-2 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">All</option>
+                        <option value="">Tout</option>
                         <option value="admin">Admin</option>
                         <option value="editeur">Editeur</option>
                     </select>

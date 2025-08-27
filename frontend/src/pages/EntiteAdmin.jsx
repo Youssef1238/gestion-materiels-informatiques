@@ -1,8 +1,8 @@
-import Affectation from "@/Components/Affectation";
-import AffecterModal from "@/Components/AffecterModal";
-import Footer from "@/Components/Footer";
-import Log from "@/Components/Log";
-import Recuperations from "@/Components/Recuperation";
+import Affectation from "@/Components/Tabs/Affectation";
+import AffecterModal from "@/Components/modals/AffecterModal";
+import Footer from "@/Components/layout/Footer";
+import Log from "@/Components/Tabs/Log";
+import Recuperations from "@/Components/Tabs/Recuperation";
 import api from "@/utils/Api";
 import { ArrowLeft, Building2, Circle } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ export default function EntitéAdmin() {
 
     const fetchStats = async ()=>{
         try {
-            const res = await api.get(`http://localhost:5500/entiteAdmin/stats/${entitéAdminId}`)
+            const res = await api.get(`entiteAdmin/stats/${entitéAdminId}`)
             console.log(res.data)
             setStats(res.data)
             setYear(res.data.monthStats? Object.keys(res.data.monthStats)[0] : "")
@@ -46,7 +46,7 @@ export default function EntitéAdmin() {
         const fetchData = async () => {
             try {
                 setIsLoading(true)
-                const res = await api.get(`http://localhost:5500/entiteAdmin/${entitéAdminId}`);
+                const res = await api.get(`entiteAdmin/${entitéAdminId}`);
                 setEntitéAdmin(res.data)
                 document.title = `${res.data.libelle_fr}`;
                 await fetchStats()
@@ -82,7 +82,7 @@ export default function EntitéAdmin() {
     }
     const GenerateReport = async (date , decharge , items)=>{
         try {
-            const response = await api.post(`http://localhost:5500/generate`,{
+            const response = await api.post(`generate`,{
                 decharge : decharge,
                 entiteAdmin : EntitéAdmin.libelle_fr,
                 date : date,

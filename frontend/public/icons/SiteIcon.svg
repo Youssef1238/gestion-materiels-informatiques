@@ -1,37 +1,11 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 64 64"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <!-- Server -->
-  <rect x="10" y="10" width="44" height="14" rx="2" ry="2" fill="#E2E8F0" />
-  <line x1="12" y1="16" x2="52" y2="16" stroke="#4A5568" />
-  <circle cx="14" cy="17" r="1" fill="#94A3B8" />
-  <circle cx="18" cy="17" r="1" fill="#94A3B8" />
-  <circle cx="22" cy="17" r="1" fill="#94A3B8" />
-
-  <!-- Monitor -->
-  <rect x="18" y="30" width="28" height="18" rx="2" ry="2" fill="#CBD5E1" />
-  <line x1="18" y1="38" x2="46" y2="38" stroke="#4A5568" />
-  <rect x="25" y="51" width="14" height="4" rx="1" ry="1" fill="#E2E8F0" />
-
-  <!-- Tools - Wrench -->
-  <path
-    d="M40 20 l6 6 m-6 -6 l6 -6 m-4 6 l-4 4"
-    stroke="#4A5568"
-    fill="none"
-  />
-
-  <!-- Connections -->
-  <line x1="18" y1="24" x2="18" y2="30" stroke="#4A5568" />
-  <line x1="46" y1="24" x2="46" y2="30" stroke="#4A5568" />
-
-  <!-- Decorative dots -->
-  <circle cx="32" cy="6" r="2" fill="#4A5568" />
-  <circle cx="8" cy="48" r="2" fill="#4A5568" />
-  <circle cx="56" cy="48" r="2" fill="#4A5568" />
+<!-- favicon-solid.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-label="Site Icon">
+  <rect width="24" height="24" rx="6" fill="#7fd0c7"></rect>
+  <g fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l6 2v5.2c0 4.3-3 7.8-6 9.3-3-1.5-6-5-6-9.3V5.5l6-2z"></path>
+    <rect x="8.25" y="8.25" width="3" height="3" rx="0.6"></rect>
+    <rect x="12.75" y="8.25" width="3" height="3" rx="0.6"></rect>
+    <rect x="8.25" y="12.75" width="3" height="3" rx="0.6"></rect>
+    <rect x="12.75" y="12.75" width="3" height="3" rx="0.6"></rect>
+  </g>
 </svg>

@@ -21,7 +21,7 @@ const getMarches = async (req,res)=>{
 
 const addMarche = async (req,res)=>{
     if(!req.body.objet || !req.body.reference || !req.body.type || !req.body.fournisseur_id || !req.body.date_creation){
-        return res.status(400).send("all fields are required ")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     try{
         const foundMarché = await Marche.findOne({reference : req.body.reference})
@@ -44,7 +44,7 @@ const addMarche = async (req,res)=>{
 }
 
 const UpdateMarche = async (req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await Marche.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -60,7 +60,7 @@ const UpdateMarche = async (req,res)=>{
             req.body.type && await Marche.updateOne({_id : req.body.id},{$set : {type : req.body.type}});
             req.body.fournisseur_id && await Marche.updateOne({_id : req.body.id},{$set : {fournisseur_id : req.body.fournisseur_id}});
             req.body.date_creation && await Marche.updateOne({_id : req.body.id},{$set : {date_creation : req.body.date_creation}});
-            res.send("Updated")
+            res.send("Mis à jour avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -70,7 +70,7 @@ const UpdateMarche = async (req,res)=>{
 
 
 const deleteMarche = async(req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await Marche.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
@@ -78,7 +78,7 @@ const deleteMarche = async(req,res)=>{
             await ArticleLivre.deleteMany({article_marche_id : {$in : Ids.map(e=>e._id)}})
             await ArticleMarche.deleteMany({marche_id : req.body.id})
             await Marche.deleteOne({_id : req.body.id})
-            res.send("Deleted")
+            res.send("Supprimé avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -86,7 +86,7 @@ const deleteMarche = async(req,res)=>{
 }
 
 const getMarche = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send('id needed')
+    if(!req.params.id) return res.status(400).send('id requis.')
     try{
         const marche = await Marche.findOne({_id : req.params.id})
         if(!marche) return res.status(404).send("Marché non trouvé")
@@ -101,7 +101,7 @@ const getMarche = async (req,res)=>{
 const searchMarche = async (req,res)=>{
     try {
         if (!req.params.query) {
-            return res.status(400).send("reference is required");
+            return res.status(400).send("reference requis.");
         }
         const regex = new RegExp(req.params.query, 'i');
         const marches = await Marche.find({ reference: { $regex: regex } });
@@ -120,7 +120,7 @@ const searchMarche = async (req,res)=>{
 }
 
 const getMarchesByFournisseur = async (req,res)=>{
-    if(!req.params.id) return res.status(400).send('id needed')
+    if(!req.params.id) return res.status(400).send('id requis.')
     try{
 
         const marches = await Marche.find({fournisseur_id : req.params.id})

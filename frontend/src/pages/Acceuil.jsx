@@ -1,8 +1,8 @@
 import api from "../utils/Api";
-import  { useEffect, useReducer, useRef, useState } from "react";
+import  { useEffect ,useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/Components/layout/layout";
-import { ArrowDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import KpiCard from "@/Components/KpiCard";
 import { Line, Pie } from "react-chartjs-2";
 import OverviewCard from "@/Components/OverviewCard";
@@ -12,88 +12,21 @@ import OverviewCard from "@/Components/OverviewCard";
 
 export default function Acceuil ()  {
     document.title = "Acceuil"
-    const [loading,setLoading] = useState(true) 
+    const [isLoading,setIsLoading] = useState(true) 
     const Navigate = useNavigate()
     const [statsData,setStatsData] = useState([])
     const lineChart = useRef();
     useEffect(()=>{
         const fetch = async ()=>{
             try{
-                setLoading(true)
-                
-                const res = await api.get(`http://localhost:5500/stats`)
-                
-                setStatsData(
-                    [
-                        {
-                          title: "Section 1 : STATS DES MARCHES",
-                          stats: [
-                            { name: "NB de marches", value: res.data.MARCHE.NB_M },
-                            { name: "NB de fournisseurs", value: res.data.MARCHE.NB_F },
-                            { name: "Moyen M/F", value: res.data.MARCHE.Moyen_MF },
-                            { name: "Moyen A/M", value: res.data.MARCHE.Moyen_AM },
-                          ],
-                        },
-                        {
-                          title: "Section 2 : STATS DES ENTITES ADMINISTRATIVES",
-                          stats: [
-                            { name: "NB des entites Administratives", value: res.data.ENTITEADMIN.NB },
-                            { name: "Ayant des articles", value: res.data.ENTITEADMIN.Aff },
-                            { name: "Avec aucun article", value: res.data.ENTITEADMIN.Non_Aff },
-                            { name: "Moyen A/EA", value: res.data.ENTITEADMIN.Moyen_AE },
-                          ],
-                        },
-                        {
-                          title: "Section 3 : STATS DES ARTICLES",
-                          stats: [
-                            { name: "NB Total des articles", value: res.data.ARTICLE.NB_TOT },
-                            { name: "Affectée", value: res.data.ARTICLE.Aff },
-                            { name: "Non Affectée", value: res.data.ARTICLE.Non_Aff },
-                          ],
-                        },
-                        {
-                          title: "Section 4: STATS DES AFFECTATIONS",
-                          stats: [
-                            { name: "ToT des affectations", value: res.data.AFFECTATION.ToT },
-                            { name: "ToT d'Aff ce jour", value: res.data.AFFECTATION.Aff_J },
-                            { name: "ToT d'Aff ce mois", value: res.data.AFFECTATION.Aff_M },
-                            { name: "ToT d'Aff cette annee", value: res.data.AFFECTATION.Aff_An },
-                          ],
-                        },
-                        {
-                          title: "Section 5 : STATS DES PRIX",
-                          stats: [
-                            {
-                              name: "",
-                              value: [
-                                { name: "ToT des prix", value: res.data.PRIX.ToT + " DH" },
-                                { name: "pourcentage d'estimation correcte", value: res.data.PRIX.PEC + " %" },
-                                { name: "le materiel le plus cher", value: res.data.PRIX.MPC },
-                              ],
-                            },
-                            {
-                              name: "Moyen des prix par type",
-                              value: res.data.TYPE_PRIX.map(e=>{
-                                return  { name: e.libelle, value: (e.MP==null? 0 : e.MP) + " DH"}
-                              }) 
-
-                               ,
-                            },
-                          ],
-                        },
-                      ]
-                )
-            }catch(error){
-              console.error(error);
-                if (error.response) {
-                    Navigate('/error',{state : {message : error.response.data ,code : error.response.status}})
-                } else if (error.request) {
-                    Navigate('/error',{state : {message :'No response received: ' + error.request}})
-                } else {
-                    Navigate('/error',{state : {message :'Error setting up the request: ' + error.message}})
-                }
+                setIsLoading(true)
+                const res = await api.get(`stats`)
+                setStatsData(res.data)
+            }catch(err){
+              console.error(err)
+              Navigate('/error')
             }finally{
-                setLoading(false)
+                setIsLoading(false)
             }
             
         }
@@ -102,7 +35,7 @@ export default function Acceuil ()  {
         
     },[])
 
-    if(loading){
+    if(isLoading){
         return <div className="w-full h-screen flex justify-center items-center">
       <svg className="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -120,16 +53,16 @@ export default function Acceuil ()  {
             Administratives sous la Conseil Provincial d'Errachidia. 
           </p>
           <div className="flex gap-4 items-center mt-12">
-            <button className="flex items-center text-gray-600 border-2 border-primary">Commencer la gestion <ArrowDown/></button>
+            <button onClick={()=>Navigate('/Gerer')} className="flex items-center gap-4 text-gray-600 hover:shadow-md hover:shadow-gray-300 border-2 border-primary">Commencer la gestion <ArrowRight/></button>
           </div>
         </div>
         <img src="/images/IntroLogin.png" alt="" className=" w-1/3"/>
       </div>
       <div id="stats" className="w-full min-h-fit bg-gray-50 py-24 px-8 grid grid-cols-2 gap-2">
-        <KpiCard title={"Marché"} total={514} day={2} month={20} year={114}/>
-        <KpiCard title={"Article"} total={514} day={2} month={20} year={114}/>
-        <KpiCard title={"Finance"} total={514} day={2} month={20} year={114}/>
-        <KpiCard title={"Activity"} total={514} day={2} month={20} year={114}/>
+        <KpiCard title={"Marché"} total={statsData.marches.total} day={statsData.marches.today} month={statsData.marches.month} year={statsData.marches.year}/>
+        <KpiCard title={"Article"} total={statsData.articles.total} day={statsData.articles.today} month={statsData.articles.month} year={statsData.articles.year}/>
+        <KpiCard title={"Finance"} total={statsData.valeur.total} day={statsData.valeur.today} month={statsData.valeur.month} year={statsData.valeur.year}/>
+        <KpiCard title={"Activité"} total={statsData.actions.total} day={statsData.actions.today} month={statsData.actions.month} year={statsData.actions.year}/>
       </div>
       <div id="charts" className="w-full min-h-fit py-24 px-8 grid grid-cols-2 gap-2">
           <div className="bg-gray-50 rounded-sm p-4">
@@ -142,7 +75,7 @@ export default function Acceuil ()  {
                     ],
                     datasets: [{
                       label: 'Total',
-                      data: [110, 50],
+                      data: [statsData.articles_affecte, statsData.articles_non_affecte],
                       backgroundColor: [
                         '#7fd0c7',
                         '#4b5563'
@@ -159,19 +92,48 @@ export default function Acceuil ()  {
           </div>
           <div className="bg-gray-50 rounded-sm p-4">
             <Line
-                  id="1"
-                  ref={lineChart}
-                  data={ {
-                    labels: ["July", "August", "September", "October", "November", "December", "January"],
-                    datasets: [{
-                      label: "Total d'affectation",
-                      data: [65, 59, 80, 81, 56, 55, 40],
-                      fill: false,
-                      borderColor: 'rgb(75, 192, 192)',
-                      tension: 0.1
-                    }]
+                data={{
+                    labels: ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"],
+                    datasets: [
+                        {
+                            label: "Affectation",
+                            data: statsData.Monthstats?.affectations || [],
+                            fill: false,
+                            borderColor: '#86efac',
+                            backgroundColor: '#bbf7d0',
+                            tension: 0.3,
+                        },
+                        {
+                            label: "Récupération",
+                            data: statsData.Monthstats?.recuperations || [],
+                            fill: false,
+                            borderColor: '#fca5a5',
+                            backgroundColor: '#fee2e2',
+                            tension: 0.3,
+                        }
+                    ]
                 }}
-                
+                options={{
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: "bottom",
+                            labels: {
+                                font: { family: "Montserrat" }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: "#f3f4f6" }
+                        }
+                    }
+                }}
             />
           </div>
       </div>

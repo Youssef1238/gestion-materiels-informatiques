@@ -8,7 +8,7 @@ const getUsers = async (req,res)=>{
         try{
             const users = await User.find({_id : {$ne : id}})
             for(const user of users){
-                user.password = undefined // remove password from response  
+                user.password = undefined 
             }
             res.json(users)
         }catch(err){
@@ -19,12 +19,12 @@ const getUsers = async (req,res)=>{
 
 const addUser = async (req,res)=>{
     if(!req.body.pseudo || !req.body.password || req.body.admin == undefined ||  req.body.admin == null){
-        return res.status(400).send("all fields are required ")
+        return res.status(400).send("Tous les champs sont obligatoires.")
     }
     
     try{
         const foundUser = await User.findOne({pseudo : req.body.pseudo})
-        if(foundUser) return res.status(409).send("Already used")
+        if(foundUser) return res.status(409).send("Pseudo existe déjà !")
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             pseudo : req.body.pseudo,
@@ -40,12 +40,12 @@ const addUser = async (req,res)=>{
 }
 
 const UpdateUser = async (req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await User.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
             req.body.admin != null && req.body.admin != undefined && await User.updateOne({_id : req.body.id},{$set : {admin : req.body.admin}});
-            res.send("Updated")
+            res.send("Mis à jour avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }
@@ -53,12 +53,12 @@ const UpdateUser = async (req,res)=>{
 }
 
 const deleteUser = async(req,res)=>{
-    if(!req.body.id) res.status(400).send("id is required")
+    if(!req.body.id) res.status(400).send("id requis.")
         try{
             const item = await User.findOne({_id : req.body.id})
             if(!item) return res.sendStatus(404)
             await User.deleteOne({_id : req.body.id})
-            res.send("Deleted")
+            res.send("Supprimé avec succès.")
         }catch(err){
             res.status(500).json({title : "Server error",message : err.message})
         }

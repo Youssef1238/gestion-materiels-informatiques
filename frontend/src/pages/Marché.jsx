@@ -1,7 +1,7 @@
 import { ExcelIcon } from "@/assets/Icons";
-import ExcelHandling from "@/Components/ExcelHandling";
-import Footer from "@/Components/Footer";
-import Forms from "@/Components/Forms";
+import ExcelHandling from "@/Components/modals/ExcelHandling";
+import Footer from "@/Components/layout/Footer";
+import Forms from "@/Components/modals/Forms";
 import api from "@/utils/Api";
 import { ArrowDownNarrowWide, ArrowLeft, ArrowRight, BoxIcon, Clipboard, Edit2, MoveLeft, PlusIcon, SearchIcon, StoreIcon, Trash2 } from "lucide-react";
 import { useRef } from "react";
@@ -18,6 +18,7 @@ export default function Marché() {
     const { marchéId } = Location.state || {};
     const [isLoading, setIsLoading] = useState(true);
     const [marché, setMarché] = useState(null);
+    const [stats, setStats] = useState({});
     const [articles, setArticles] = useState(null);
     const [subArticles, setSubArticles] = useState(null);
     const [filteredSubArticles, setFilteredSubArticles] = useState(null);
@@ -39,10 +40,10 @@ export default function Marché() {
             try {
                 if(!isFormOpen) document.body.style.overflow = '';
                 setIsLoading(true)
-                const res = await api.get(`http://localhost:5500/marche/${marchéId}`);
+                const res = await api.get(`marche/${marchéId}`);
                 setMarché(res.data)
                 document.title = `Marché - ${res.data.reference}`;
-                const resA = await api.get(`http://localhost:5500/articleMarche/marche/${marchéId}`);
+                const resA = await api.get(`articleMarche/marche/${marchéId}`);
                 setArticles(Array.from(resA.data).sort((a,b)=> a.Numero - b.Numero))
                 setCurrentArticle(resA.data[0]?._id || null) 
                 await fetchDetail(resA.data[0]?._id || null)
@@ -81,9 +82,10 @@ export default function Marché() {
     },[isAnimated])
     const fetchArticles = async () => {
         try {
-            const resA = await api.get(`http://localhost:5500/articleMarche/marche/${marchéId}`);
+            const resA = await api.get(`articleMarche/marche/${marchéId}`);
             setArticles(Array.from(resA.data).sort((a,b)=> a.Numero - b.Numero))
-            setCurrentArticle(resA.data[0]?._id || null) 
+            setCurrentArticle(resA.data[0]?._id || null)
+            
             await fetchDetail(resA.data[0]?._id || null)
             setError(false)
         } catch (err) {
@@ -98,9 +100,11 @@ export default function Marché() {
     const fetchDetail = async (id)=>{
             try {
                 if(id){
-                    const resSA = await api.get(`http://localhost:5500/articleLivre/${id}`);
+                    const resSA = await api.get(`articleLivre/${id}`);
                     setSubArticles(Array.from(resSA.data).sort((a,b)=> a.Numero - b.Numero))
                     setFilteredSubArticles(Array.from(resSA.data).sort((a,b)=> a.Numero - b.Numero))
+                    const resS = await api.get(`stats/marche/${marchéId}`);
+                    setStats(resS.data)
                 }
                 
             } catch (error) {
@@ -147,7 +151,7 @@ export default function Marché() {
         if(formInfo[1] == "Marché"){
             try {
                 setIsLoading(true)
-                const res = await api.get(`http://localhost:5500/marche/${marchéId}`);
+                const res = await api.get(`marche/${marchéId}`);
                 setMarché(res.data)
             } catch (err) {
                 if (err.response) {
@@ -179,7 +183,7 @@ export default function Marché() {
     }
     const deleteArticle = async (id)=>{
         try {
-            await api.delete('http://localhost:5500/articleMarche',{
+            await api.delete('articleMarche',{
                     data : {id : id}
             })
             setIsDelete(null)
@@ -191,7 +195,7 @@ export default function Marché() {
     }
     const deleteSubArticle = async (id)=>{
         try {
-            await api.delete(`http://localhost:5500/articleLivre`,{
+            await api.delete(`articleLivre`,{
                 data : {
                     id : id
                 }
@@ -210,7 +214,7 @@ export default function Marché() {
     }
     const deleteMarché = async ()=>{
         try {
-            await api.delete('http://localhost:5500/marche',{
+            await api.delete('marche',{
                     data : {id : marchéId},              
             })
             Navigate('/Gerer')
@@ -326,10 +330,10 @@ export default function Marché() {
                     <div className="w-1/2 py-2  px-8 bg-gray-100  rounded-md shadow-md shadow-gray-200 flex flex-col justify-center gap-12">
                         <div className="flex flex-col py-2 items-start gap-4">
                             <span className="text-lg font-semibold">Nombre Total d'articles: 
-                                <span className="font-Montserrat text-lg font-light"> 42</span>
+                                <span className="font-Montserrat text-lg font-light"> {stats?.totalArticles || 0}</span>
                             </span>
                             <span className="text-lg font-semibold">Valeur en Dhs: 
-                                <span className="font-Montserrat text-lg font-light"> 50 000 DH</span>
+                                <span className="font-Montserrat text-lg font-light"> {stats?.totalValue || 0} DH</span>
                             </span>
                         </div>
                         <div className="rounded-sm p-4">
@@ -342,7 +346,7 @@ export default function Marché() {
                                     ],
                                     datasets: [{
                                     label: 'Total',
-                                    data: [110, 50],
+                                    data: [stats.affectedNB?? 0, stats.non_affectedNB ?? 0],
                                     backgroundColor: [
                                         '#7fd0c7',
                                         '#4b5563'
