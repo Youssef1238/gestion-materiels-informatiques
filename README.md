@@ -72,13 +72,21 @@ The system tracks the process from opening a **Marché** (procurement batch) to 
 ---
 
 ## 📂 Project Structure
+```
+```
 Source-Code/
 │── frontend/ # React + Tailwind app
+
 │── backend/ # Express + MongoDB app
+
 │ ├── models/ # Mongoose schemas
+
 │ ├── controllers/# Business logic
+
 │ ├── routes/ # API endpoints
+
 │ ├── .env # Environment variables (ignored by Git)
+
 │── README.md # Project overview
 
 ---
