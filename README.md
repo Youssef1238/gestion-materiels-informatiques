@@ -75,6 +75,7 @@ The system tracks the process from opening a **Marché** (procurement batch) to 
 ```
 ```
 Source-Code/
+
 │── frontend/ # React + Tailwind app
 
 │── backend/ # Express + MongoDB app
@@ -107,7 +108,7 @@ cd backend
 2. add a .env file with these variables
 ```bash
 PORT=XXXX
-MONGODB_CONNECTION_STRING=_____________________
+MONGODB_CONNECTION_STRING="your-mongodb-connection-string-here"
 JWT_ACCESS_TOKEN_SECRET=XXXXYOUR_ACCESS_SECRETXXXXXXXXXXXXXXXXXXXX
 JWT_REFRESH_TOKEN_SECRET=XXXXYOUR_REFRESH_SECRETXXXXXXXXXXXXXXXXXXXX
 ```

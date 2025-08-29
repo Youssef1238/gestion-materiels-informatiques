@@ -1,41 +1,80 @@
-# Gestion des Matériels Informatiques - README
+# Gestion des Matériels Informatiques – Backend
 
-## Dépendances Backend
+This folder contains the **backend** of the IT Materials Management system.  
+Built with **Express.js** and **MongoDB**, it provides the API, authentication, and data management for the application.
 
-Pour le backend, vous devez installer les dépendances suivantes :
+---
 
-- **cors** : [version à spécifier]
-- **docx** : [version à spécifier]
-- **docxtemplater** : [version à spécifier]
-- **envdot** : [version à spécifier]
-- **express** : [version à spécifier]
-- **mongoose** : [version à spécifier]
-- **pizzip** : [version à spécifier]
-- **xlsx** : [version à spécifier]
+## 🛠 Dependencies
 
-### Dépendances de développement
+### Production Dependencies
 
-- **nodemon** : Utilisé pour recharger automatiquement l'application lors des modifications de fichiers.
+- **bcrypt** – hashing library for securely storing passwords  
+- **cookie-parser** – parse cookies for authentication and session handling  
+- **cors** – enable Cross-Origin Resource Sharing  
+- **docx** – create and manipulate Word documents  
+- **docxtemplater** – generate Word documents from templates  
+- **envdot** – manage environment variables  
+- **express** – Node.js web framework  
+- **jsonwebtoken** – create and verify JWT tokens for authentication  
+- **mongoose** – MongoDB object modeling for Node.js  
+- **pizzip** – ZIP compression support (used by docxtemplater)  
+- **xlsx** – read/write Excel files
 
-Pour installer toutes les dépendances et devDependencies, vous pouvez simplement exécuter la commande suivante dans votre terminal :
+### Development Dependencies
+
+- **nodemon** – automatically restarts the server on file changes  
+- **clipboardy** – utility for accessing clipboard (used in development scripts, optional)
+
+---
+
+> 💡 Note: All sensitive environment variables (e.g., database URIs, JWT secrets) should remain in `.env` and never be committed to GitHub.
+
+
+Install all dependencies and devDependencies with:
 
 ```bash
 npm install
 
 ```
-### Variables d'environements
 
-il faut ajouter un fichier env contenant le URI de DATABASE 
-
-**MONGODB_CONNECTION_STRING** = "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-
-### Lancer le serveur : 
-
-Peut-être personnaliser dans le package.json
+Create a .env file in the backend folder with the following variable:
 
 ```bash
-npm run dev
+PORT=XXXX
+MONGODB_CONNECTION_STRING="your-mongodb-connection-string-here"
+JWT_ACCESS_TOKEN_SECRET=XXXXYOUR_ACCESS_SECRETXXXXXXXXXXXXXXXXXXXX
+JWT_REFRESH_TOKEN_SECRET=XXXXYOUR_REFRESH_SECRETXXXXXXXXXXXXXXXXXXXX
 
 ```
 
+You can start the backend server in development mode with:
+```bash
+npm run dev
+```
 
+## 📂 Folder Structure
+
+backend/
+
+├── config/ # Database connection configuration (used whenever connecting to MongoDB)
+
+├── controllers/ # Request handlers and business logic
+
+├── middlewares/ # Express middlewares (auth, error handling, etc.)
+
+├── models/ # Mongoose schemas for different entities
+
+├── node_modules/ # Installed Node.js dependencies (auto-generated)
+
+├── public/ # Public assets (if any)
+
+├── routes/ # API route definitions
+
+├── utils/ # Utility functions, e.g., Word document generation
+
+├── index.js # Entry point of the backend server
+
+├── .env # Environment variables (ignored in Git)
+
+└── package.json # Dependencies and scripts
