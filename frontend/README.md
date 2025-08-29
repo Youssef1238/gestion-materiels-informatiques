@@ -5,7 +5,6 @@ Built with **React** and **TailwindCSS**, it provides the user interface, dashbo
 
 ---
 
-## 🛠 Dependencies
 
 ## 🛠 Dependencies
 

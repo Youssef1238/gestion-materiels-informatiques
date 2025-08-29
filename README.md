@@ -1,4 +1,4 @@
-# Gestion des Articles Informatiques
+# Gestion des Matériels Informatiques
 
 A web application for managing the lifecycle of IT materials ("Matériel Informatique") within an organization.  
 The system tracks the process from opening a **Marché** (procurement batch) to distributing **Articles** (IT assets) to different **Entités Administratives**, while maintaining reports, history, and secure access.
