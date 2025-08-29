@@ -67,36 +67,36 @@ npm run dev
 
 frontend/
 
-├── node_modules/       # Installed Node.js dependencies
+├── node_modules/       -- Installed Node.js dependencies
 
-├── public/             # Static assets, index.html
+├── public/             -- Static assets, index.html
 
 ├── src/
 
-│   ├── assets/         # Images, icons, and other media
+│   ├── assets/         -- Images, icons, and other media
 
-│   ├── auth/           # Authentication logic: login, logout, refresh token
+│   ├── auth/           -- Authentication logic: login, logout, refresh token
 
-│   ├── components/     # Reusable UI components
+│   ├── components/     -- Reusable UI components
 
-│   ├── lib/            # Helper functions and static data
+│   ├── lib/            -- Helper functions and static data
 
-│   ├── pages/          # React pages for routes
+│   ├── pages/          -- React pages for routes
 
-│   ├── utils/          # Customized Axios instance ("api") and utility functions
+│   ├── utils/          -- Customized Axios instance ("api") and utility functions
 
-│   ├── main.jsx        # Application entry point
+│   ├── main.jsx        -- Application entry point
 
-│   ├── input.css       # Tailwind input CSS
+│   ├── input.css       -- Tailwind input CSS
 
-│   └── output.css      # Compiled Tailwind CSS
+│   └── output.css      -- Compiled Tailwind CSS
 
-├── .env                # Environment variables (ignored in Git)
+├── .env                -- Environment variables (ignored in Git)
 
-├── package.json        # Dependencies and scripts
+├── package.json        -- Dependencies and scripts
 
-├── tailwind.config.js  # Tailwind configuration
+├── tailwind.config.js  -- Tailwind configuration
 
-├── index.html          # Main HTML file
+├── index.html          -- Main HTML file
 
-└── README.md           # Frontend documentation
+└── README.md           -- Frontend documentation

@@ -57,24 +57,24 @@ npm run dev
 
 backend/
 
-├── config/ # Database connection configuration (used whenever connecting to MongoDB)
+├── config/ -- Database connection configuration (used whenever connecting to MongoDB)
 
-├── controllers/ # Request handlers and business logic
+├── controllers/ -- Request handlers and business logic
 
-├── middlewares/ # Express middlewares (auth, error handling, etc.)
+├── middlewares/ -- Express middlewares (auth, error handling, etc.)
 
-├── models/ # Mongoose schemas for different entities
+├── models/ -- Mongoose schemas for different entities
 
-├── node_modules/ # Installed Node.js dependencies (auto-generated)
+├── node_modules/ -- Installed Node.js dependencies (auto-generated)
 
-├── public/ # Public assets (if any)
+├── public/ -- Public assets (if any)
 
-├── routes/ # API route definitions
+├── routes/ -- API route definitions
 
-├── utils/ # Utility functions, e.g., Word document generation
+├── utils/ -- Utility functions, e.g., Word document generation
 
-├── index.js # Entry point of the backend server
+├── index.js -- Entry point of the backend server
 
-├── .env # Environment variables (ignored in Git)
+├── .env -- Environment variables (ignored in Git)
 
-└── package.json # Dependencies and scripts
+└── package.json -- Dependencies and scripts

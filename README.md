@@ -72,8 +72,7 @@ The system tracks the process from opening a **Marché** (procurement batch) to 
 ---
 
 ## 📂 Project Structure
-```
-```
+
 Source-Code/
 
 │── frontend/ # React + Tailwind app
