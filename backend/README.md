@@ -24,7 +24,6 @@ Built with **Express.js** and **MongoDB**, it provides the API, authentication, 
 ### Development Dependencies
 
 - **nodemon** – automatically restarts the server on file changes  
-- **clipboardy** – utility for accessing clipboard (used in development scripts, optional)
 
 ---
 
